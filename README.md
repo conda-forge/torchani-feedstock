@@ -5,11 +5,9 @@ Home: https://github.com/aiqm/torchani
 
 Package license: MIT
 
-Feedstock license: BSD-3-Clause
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/torchani-feedstock/blob/master/LICENSE.txt)
 
 Summary: Accurate Neural Network Potential on PyTorch
-
-
 
 Current build status
 ====================
