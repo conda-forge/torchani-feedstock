@@ -9,27 +9,29 @@ source:
   # url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   # sha256: c086fe6cabe49a0408d1f1b12aaf14e33b9e6ef0ffb15f3020792934e7c9fbbe
 
-  git_url: https://github.com/akkamesh/torchani.git
-  git_rev: enh-ext-aev
-  
+  git_url: https://github.com/hadim/torchani.git
+  git_rev: cuda
+
 build:
-  skip: True  # [win]
   number: 0
   script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
   build:
+    - pip
+    - setuptools_scm
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('cuda') }}  # [linux64 and cuda_compiler_version != "None"]
-    - cub
-    - pytorch
+    - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
+    - cub  # [cuda_compiler_version != "None"]
+    - pytorch  # [cuda_compiler_version != "None"]
+    - ninja  # [cuda_compiler_version != "None"]
   host:
     - python
     - pip
   run:
     - python
-    - setuptools  # required for pkg_resources
+    - setuptools
     - pytorch
     - lark-parser
     - requests
