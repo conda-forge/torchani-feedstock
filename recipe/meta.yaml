@@ -44,6 +44,7 @@ requirements:
 test:
   imports:
     - torchani
+    - cuaev  # [cuda_compiler_version != "None"]
 
 about:
   home: https://github.com/aiqm/torchani
