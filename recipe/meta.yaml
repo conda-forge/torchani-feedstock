@@ -38,7 +38,7 @@ requirements:
     - requests
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ pin_compatible('cudatoolkit-dev') }}  # [cuda_compiler_version != "None"]
+    - {{ pin_compatible('cudatoolkit') }}  # [cuda_compiler_version != "None"]
     - nvcc_linux-64  # [cuda_compiler_version != "None"]
 
 test:
