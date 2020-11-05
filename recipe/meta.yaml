@@ -24,6 +24,7 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
     - cub  # [cuda_compiler_version != "None"]
+    - {{ pin_compatible('cudatoolkit') }}  # [cuda_compiler_version != "None"]
     - pytorch  # [cuda_compiler_version != "None"]
     - ninja  # [cuda_compiler_version != "None"]
   host:
