@@ -20,11 +20,9 @@ requirements:
   build:
     - pip
     - setuptools_scm
-    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
     - cub  # [cuda_compiler_version != "None"]
-    - {{ pin_compatible('cudatoolkit') }}  # [cuda_compiler_version != "None"]
     - pytorch  # [cuda_compiler_version != "None"]
     - ninja  # [cuda_compiler_version != "None"]
   host:
@@ -37,10 +35,6 @@ requirements:
     - pytorch
     - lark-parser
     - requests
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
-    - {{ pin_compatible('cudatoolkit') }}  # [cuda_compiler_version != "None"]
-    - nvcc_linux-64  # [cuda_compiler_version != "None"]
 
 test:
   imports:
