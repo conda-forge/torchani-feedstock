@@ -1,1 +1,10 @@
 conda_forge_output_validation: true
+
+# Not sure doing that is great.
+# See https://github.com/conda-forge/staged-recipes/pull/12839/files#diff-478786365dd93f740eb520c2faa03d7a0623273663b75472272c8ef94297bbe2R4
+# I won't merge before a conda-forge dev tell it's fine.
+channels:
+  sources:
+    - conda-forge
+    - https://conda.anaconda.org/pytorch
+    - defaults
