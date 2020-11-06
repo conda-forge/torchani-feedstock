@@ -1,6 +1,15 @@
 {% set name = "torchani" %}
 {% set version = "2.2" %}
 
+# Set CUDA related variables
+{% if cuda_compiler_version != "None" %}
+{% set cuda_build_prefix = "cuda" + cuda_compiler_version|string %}
+{% else %}
+{% set cuda_build_prefix = "" %}
+{% endif %}
+
+{% set build_number = 0 %}
+
 package:
   name: {{ name|lower }}
   version: {{ version }}
@@ -13,7 +22,8 @@ source:
   git_rev: cuda
 
 build:
-  number: 0
+  number: {{ build }}
+  string: "{{ cuda_build_prefix }}py{{ py }}h{{ PKG_HASH }}_{{ build }}"
   script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
