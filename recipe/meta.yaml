@@ -22,9 +22,9 @@ source:
   git_rev: cuda
 
 build:
-  number: {{ build }}
-  string: "{{ cuda_build_prefix }}py{{ py }}h{{ PKG_HASH }}_{{ build }}"
-  script: "{{ PYTHON }} -m pip install . -vv"
+  number: {{ build_number }}
+  string: {{ cuda_build_prefix }}py{{ py }}h{{ PKG_HASH }}_{{ build_number }}
+  script: {{ PYTHON }} -m pip install . -vv
 
 requirements:
   build:
