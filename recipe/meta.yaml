@@ -28,17 +28,15 @@ build:
 
 requirements:
   build:
-    - pip
-    - setuptools_scm
+    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
-    - cub  # [cuda_compiler_version != "None"]
-    - {{ pin_compatible('pytorch') }}  # [cuda_compiler_version != "None"]
-    - ninja  # [cuda_compiler_version != "None"]
+    - {{ compiler('cuda') }}  # [linux64 and cuda_compiler_version != 'None']
+    - ninja  # [linux64 and cuda_compiler_version != 'None']
   host:
     - python
     - pip
     - setuptools_scm
+    - pytorch
   run:
     - python
     - setuptools
