@@ -39,6 +39,7 @@ requirements:
     - setuptools_scm
     - pytorch-gpu  # [cuda_compiler_version not in (undefined, 'None')]
     - pytorch-cpu  # [osx]
+    - typing_extensions
 
   run:
     - python
