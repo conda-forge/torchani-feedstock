@@ -40,6 +40,7 @@ requirements:
     - pytorch-gpu  # [cuda_compiler_version not in (undefined, 'None')]
     - pytorch-cpu  # [osx]
     - typing_extensions
+    - cub  # [cuda_compiler_version not in (undefined, 'None')] 
 
   run:
     - python
@@ -51,6 +52,7 @@ requirements:
     # ^ needed so conda build does not complain about overlinking
     - {{ pin_compatible('pytorch-gpu') }}  # [cuda_compiler_version not in (undefined, 'None')]
     - {{ pin_compatible('pytorch-cpu') }}  # [cuda_compiler_version in (undefined, 'None')]
+    - cub  # [cuda_compiler_version not in (undefined, 'None')]
 
 test:
   imports:
