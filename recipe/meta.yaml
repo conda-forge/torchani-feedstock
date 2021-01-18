@@ -46,6 +46,7 @@ requirements:
     - lark-parser
     - requests
     - importlib_metadata
+    - typing_extensions
     # ^ needed so conda build does not complain about overlinking
     - {{ pin_compatible('pytorch-gpu') }}  # [cuda_compiler_version not in (undefined, 'None')]
     - {{ pin_compatible('pytorch-cpu') }}  # [cuda_compiler_version in (undefined, 'None')]
