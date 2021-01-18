@@ -21,7 +21,7 @@ build:
   missing_dso_whitelist:
     - "*/libcuda.*"  # [linux64 or ppc64le]
   script: {{ PYTHON }} -m pip install . -vv  # [cuda_compiler_version in (undefined, 'None')]
-  script: {{ PYTHON }} -m pip install . -vv  --cuaev  # [cuda_compiler_version not in (undefined, 'None')]
+  script: {{ PYTHON }} setup.py install --cuaev  # [cuda_compiler_version not in (undefined, 'None')]
 
 requirements:
 
@@ -45,13 +45,12 @@ requirements:
     - setuptools
     - lark-parser
     - requests
+    - importlib_metadata
     # ^ needed so conda build does not complain about overlinking
     - {{ pin_compatible('pytorch-gpu') }}  # [cuda_compiler_version not in (undefined, 'None')]
     - {{ pin_compatible('pytorch-cpu') }}  # [cuda_compiler_version in (undefined, 'None')]
 
 test:
-  requires:
-    - importlib_metadata
   imports:
     - torchani
     - torchani.cuaev  # [cuda_compiler_version not in (undefined, 'None')]
