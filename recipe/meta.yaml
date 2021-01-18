@@ -14,7 +14,7 @@ source:
 
 build:
   number: 1
-  skip: true  # [win or (linux and cuda_compiler_version in (undefined, 'None'))]
+  # skip: true  # [win or (linux and cuda_compiler_version in (undefined, 'None'))]
   rpaths:
     - lib/
     - {{ SP_DIR }}/torch/lib
