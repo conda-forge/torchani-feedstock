@@ -1,37 +1,70 @@
 {% set name = "torchani" %}
-{% set version = "2.2" %}
+{% set version = "2.2.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: c086fe6cabe49a0408d1f1b12aaf14e33b9e6ef0ffb15f3020792934e7c9fbbe
-  
-build:
-  noarch: python
-  number: 0
-  script: "{{ PYTHON }} -m pip install . -vv"
+  git_url: https://github.com/aiqm/{{ name }}.git
+  git_rev: v{{ version }}
 
 requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('cuda') }}  # [cuda_compiler_version not in (undefined, 'None')]
+
   host:
-    - python
-    - pip
+    - python {{ python }}
     - setuptools_scm
-  run:
-    - python
-    - setuptools  # required for pkg_resources
-    - pytorch
+    - cmake
+    - ninja
+    - importlib_metadata
     - lark-parser
     - requests
+    - h5py
+    - defaults::numpy >=1.18
+    - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version not in (undefined, 'None')]
+    - pytorch-cpu {{ pytorch_version }}  # [osx]
+
+  run:
+    - python {{ python }}
+    - setuptools
+    - importlib_metadata
+    - lark-parser
+    - requests
+    - h5py
+    - defaults::numpy >=1.18
+    - torchvision >=0.10
+    - pytorch
+    # ^ needed so conda build does not complain about overlinking
+    - {{ pin_compatible('pytorch-gpu', max_pin='x.x.x') }}  # [cuda_compiler_version not in (undefined, 'None')]
+    - {{ pin_compatible('pytorch-cpu', max_pin='x.x.x') }}  # [osx]
+
+build:
+  number: 0
+  skip: true  # [win or (linux and cuda_compiler_version in (undefined, 'None', '10.2'))]
+  string: py{{py}}_torch1.9.1_cuda11.1
+  script:
+    - "{{ PYTHON }} -m pip install . --global-option='--ext-all-sms' -vvv --no-deps"
 
 test:
   imports:
     - torchani
+    - torchani.cuaev
+  source_files:
+    - tests/*
+    - download.sh
+    - dataset/*
+  commands:
+    - pip install pytest pynvml pkbar ase parameterized
+    - ./download.sh
+    # cuaev test
+    - python -m pytest -v -s tests/*.py
 
 about:
-  home: https://github.com/aiqm/torchani
+  home: https://roitberg.chem.ufl.edu
   license: MIT
   license_family: MIT
   license_file: LICENSE
@@ -40,3 +73,4 @@ about:
 extra:
   recipe-maintainers:
     - hadim
+    - yueyericardo
