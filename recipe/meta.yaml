@@ -9,6 +9,13 @@ source:
   git_url: https://github.com/aiqm/{{ name }}.git
   git_rev: v{{ version }}
 
+build:
+  number: 0
+  skip: true  # [win or (linux and cuda_compiler_version in (undefined, 'None', '10.2'))]
+  string: py{{py}}_torch1.9.1_cuda11.1
+  script:
+    - "{{ PYTHON }} -m pip install . --global-option='--ext-all-sms' -vvv --no-deps"
+
 requirements:
   build:
     - {{ compiler('c') }}
@@ -41,13 +48,6 @@ requirements:
     # ^ needed so conda build does not complain about overlinking
     - {{ pin_compatible('pytorch-gpu', max_pin='x.x.x') }}  # [cuda_compiler_version not in (undefined, 'None')]
     - {{ pin_compatible('pytorch-cpu', max_pin='x.x.x') }}  # [osx]
-
-build:
-  number: 0
-  skip: true  # [win or (linux and cuda_compiler_version in (undefined, 'None', '10.2'))]
-  string: py{{py}}_torch1.9.1_cuda11.1
-  script:
-    - "{{ PYTHON }} -m pip install . --global-option='--ext-all-sms' -vvv --no-deps"
 
 test:
   imports:
