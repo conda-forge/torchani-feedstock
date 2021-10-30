@@ -60,8 +60,8 @@ requirements:
     - numpy
     - torchvision >=0.10
     - pytorch
-    - pytorch-gpu                        # [cuda_compiler_version != "None"]
-    - pytorch-cpu                        # [cuda_compiler_version == "None"]
+    - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
+    - pytorch-cpu {{ pytorch_version }}  # [cuda_compiler_version == "None"]
 
 test:
   imports:
