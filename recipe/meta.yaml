@@ -63,11 +63,11 @@ test:
     - download.sh
     - dataset/*
   commands:
-    - python -m pip install pytest pynvml pkbar ase parameterized  # [linux64]
-    - sudo yum install wget unzip -y                               # [linux64]
-    - ./download.sh                                                # [linux64]
+    - python -m pip install pytest pynvml pkbar ase parameterized expecttest  # [linux64]
+    - sudo yum install wget unzip -y                                          # [linux64]
+    - ./download.sh                                                           # [linux64]
     # cuaev test
-    - cd tests; python -m pytest -v -s test_cuaev.py               # [linux64]
+    - cd tests; python -m pytest -v -s test_cuaev.py                          # [linux64]
 
 about:
   home: https://github.com/aiqm/torchani
