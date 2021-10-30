@@ -20,7 +20,7 @@ build:
   script:
     # cuda 10.2 does not have cub, and need to be manually downloaded
     # - sudo yum install wget unzip -y                                                  # [cuda_compiler_version == '10.2']
-    # but current master version cub has conflict with cuda 10.2, so cuaev will not support cuda 10.2 for now.
+    # but the current master version of cub has conflict with cuda 10.2, so cuaev will not support cuda 10.2 for now.
     - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version in ("None", '10.2')]
     - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version not in ("None", '10.2')]
 
