@@ -1,7 +1,7 @@
 About torchani
 ==============
 
-Home: https://roitberg.chem.ufl.edu
+Home: https://github.com/aiqm/torchani
 
 Package license: MIT
 

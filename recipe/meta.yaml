@@ -9,9 +9,8 @@ package:
   version: {{ version }}
 
 source:
-  git_url: https://github.com/yueyericardo/{{ name }}.git
-  # git_rev: {{ version }}
-  git_tag: conda
+  git_url: https://github.com/aiqm/{{ name }}.git
+  git_rev: {{ version }}
 
 build:
   number: 0
@@ -19,11 +18,11 @@ build:
   string: py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}                                                  # [cuda_compiler_version == "None"]
   string: py{{ CONDA_PY }}cuda{{ cuda_compiler_version|replace('.', '') }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}  # [cuda_compiler_version != "None"]
   script:
-    # cuda 10.2 does not have cub, and need manually downloading it
-    # - sudo yum install wget unzip -y                                                    # [cuda_compiler_version == '10.2']
+    # cuda 10.2 does not have cub, and need to be manually downloaded
+    # - sudo yum install wget unzip -y                                                  # [cuda_compiler_version == '10.2']
     # but current master version cub has conflict with cuda 10.2, so cuaev will not support cuda 10.2 for now.
-    - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version in (undefined, "None", '10.2')]
-    - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version != "None"]
+    - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version in ("None", '10.2')]
+    - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version not in ("None", '10.2')]
 
 requirements:
   build:
@@ -31,22 +30,12 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
     - sysroot_linux-64 ==2.17                # [linux64]
-    # - python                                 # [build_platform != target_platform]
-    # - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    # - numpy                                  # [build_platform != target_platform]
-    # - pytorch =*={{ torchani_proc_type }}*   # [build_platform != target_platform]
 
   host:
     - python
     - pip
     - setuptools_scm
-    # - setuptools
     - importlib_metadata
-    # - lark-parser
-    # - requests
-    # - h5py
-    # - cmake
-    # - ninja
     - numpy
     - pytorch
     - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
@@ -81,7 +70,7 @@ test:
     - cd tests; python -m pytest -v -s test_cuaev.py               # [linux64]
 
 about:
-  home: https://roitberg.chem.ufl.edu
+  home: https://github.com/aiqm/torchani
   license: MIT
   license_family: MIT
   license_file: LICENSE
