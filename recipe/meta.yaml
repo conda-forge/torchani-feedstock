@@ -9,8 +9,9 @@ package:
   version: {{ version }}
 
 source:
-  git_url: https://github.com/aiqm/{{ name }}.git
-  git_rev: {{ version }}
+  git_url: https://github.com/yueyericardo/{{ name }}.git
+  # git_rev: {{ version }}
+  git_tag: conda
 
 build:
   number: 0
@@ -18,8 +19,9 @@ build:
   string: py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}                                                  # [cuda_compiler_version == "None"]
   string: py{{ CONDA_PY }}cuda{{ cuda_compiler_version|replace('.', '') }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}  # [cuda_compiler_version != "None"]
   script:
-    - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version == "None"]
-    - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version != "None"]
+    - "{{ PYTHON }} -m pip install . -vvv --no-deps"
+    # - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version == "None"]
+    # - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version != "None"]
 
 requirements:
   build:
@@ -41,6 +43,8 @@ requirements:
     # - lark-parser
     # - requests
     # - h5py
+    # - cmake
+    # - ninja
     - numpy
     - pytorch
     - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
@@ -69,6 +73,7 @@ test:
     - dataset/*
   commands:
     - python -m pip install pytest pynvml pkbar ase parameterized  # [linux64]
+    - yum install wget unzip                                       # [linux64]
     - ./download.sh                                                # [linux64]
     # cuaev test
     - python -m pytest -v -s tests/*.py                            # [linux64]
