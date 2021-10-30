@@ -1,5 +1,6 @@
 {% set name = "torchani" %}
 {% set version = "2.2.1" %}
+{% set torchani_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
   name: {{ name|lower }}
@@ -11,8 +12,9 @@ source:
 
 build:
   number: 0
-  skip: true  # [win or (linux and cuda_compiler_version in (undefined, 'None', '10.2'))]
-  string: py{{py}}_torch1.9.1_cuda11.1
+  skip: true  # [win]
+  string: py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}                                                  # [cuda_compiler_version == "None"]
+  string: py{{ CONDA_PY }}cuda{{ cuda_compiler_version|replace('.', '') }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}  # [cuda_compiler_version != "None"]
   script:
     - "{{ PYTHON }} -m pip install . --global-option='--ext-all-sms' -vvv --no-deps"
 
@@ -20,10 +22,10 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('cuda') }}  # [cuda_compiler_version not in (undefined, 'None')]
+    - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
 
   host:
-    - python {{ python }}
+    - python
     - setuptools_scm
     - cmake
     - ninja
@@ -31,23 +33,22 @@ requirements:
     - lark-parser
     - requests
     - h5py
-    - defaults::numpy >=1.18
-    - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version not in (undefined, 'None')]
-    - pytorch-cpu {{ pytorch_version }}  # [osx]
+    - numpy >=1.18
+    - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
+    - pytorch-cpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
 
   run:
-    - python {{ python }}
+    - python
     - setuptools
     - importlib_metadata
     - lark-parser
     - requests
     - h5py
-    - defaults::numpy >=1.18
+    - numpy
     - torchvision >=0.10
     - pytorch
-    # ^ needed so conda build does not complain about overlinking
-    - {{ pin_compatible('pytorch-gpu', max_pin='x.x.x') }}  # [cuda_compiler_version not in (undefined, 'None')]
-    - {{ pin_compatible('pytorch-cpu', max_pin='x.x.x') }}  # [osx]
+    - pytorch-gpu                            # [cuda_compiler_version != "None"]
+    - pytorch-cpu                            # [cuda_compiler_version == "None"]
 
 test:
   imports:
