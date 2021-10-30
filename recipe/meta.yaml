@@ -59,6 +59,7 @@ test:
     - torchani
     - torchani.cuaev                     # [cuda_compiler_version != "None"]
   source_files:
+    - torchani/resources/*
     - tests/*
     - download.sh
     - dataset/*
