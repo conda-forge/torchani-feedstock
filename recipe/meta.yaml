@@ -69,8 +69,16 @@ test:
   requires:
     - wget
     - unzip
+    - tb-nightly
+    - tqdm
+    - ase
+    - h5py
+    - pillow
+    - pyyaml
+    - pytest
+    - expecttest
   commands:
-    - python -m pip install -r test_requirements.txt                          # [linux64]
+    - python -m pip install pkbar                                             # [linux64]
     - ./download.sh                                                           # [linux64]
     # broken symlink that got ignored when copying
     - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [linux64]
