@@ -18,8 +18,6 @@ build:
   string: py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}                                                  # [cuda_compiler_version == "None"]
   string: py{{ CONDA_PY }}cuda{{ cuda_compiler_version|replace('.', '') }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}  # [cuda_compiler_version != "None"]
   script:
-    # cuda 10.2 does not have cub, which need to be manually downloaded in setup.py
-    - sudo yum install wget unzip -y                                                    # [cuda_compiler_version == '10.2']
     - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version != "None"]
     - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version == "None"]
 
@@ -39,6 +37,9 @@ requirements:
     - pytorch
     - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
     - pytorch-cpu {{ pytorch_version }}  # [cuda_compiler_version == "None"]
+    # cuda 10.2 does not have cub, which need to be manually downloaded in setup.py
+    - wget                               # [cuda_compiler_version == "10.2"]
+    - unzip                              # [cuda_compiler_version == "10.2"]
 
   run:
     - python
@@ -65,9 +66,11 @@ test:
     - download.sh
     - dataset/*
     - test_requirements.txt
+  requires:
+    - wget
+    - unzip
   commands:
     - python -m pip install -r test_requirements.txt                          # [linux64]
-    - sudo yum install wget unzip -y                                          # [linux64]
     - ./download.sh                                                           # [linux64]
     # broken symlink that got ignored when copying
     - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [linux64]
