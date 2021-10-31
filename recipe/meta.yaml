@@ -49,7 +49,6 @@ requirements:
     - requests
     - h5py
     - numpy
-    - torchvision >=0.10
     - pytorch
     - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
     - pytorch-cpu {{ pytorch_version }}  # [cuda_compiler_version == "None"]
