@@ -69,7 +69,7 @@ test:
   requires:
     - wget
     - unzip
-    - tb-nightly
+    - tensorboard
     - tqdm
     - ase
     - h5py
