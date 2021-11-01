@@ -7,8 +7,8 @@ package:
   version: {{ version }}
 
 source:
-  git_url: https://github.com/aiqm/{{ name }}.git
-  git_rev: {{ version }}
+  url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
+  sha256: c4f299a586518c57b17332309f803e6ae34c1b7a4b48d542bd6c46e9c4f8d146
 
 build:
   number: 0
