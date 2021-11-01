@@ -77,8 +77,8 @@ test:
     - pyyaml
     - pytest
     - expecttest
+    - pkbar
   commands:
-    - python -m pip install pkbar                                             # [linux64]
     # download testing datasets
     - ./download.sh                                                           # [linux64]
     # broken symlink that got ignored when copying
