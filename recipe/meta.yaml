@@ -1,5 +1,3 @@
-# Notes: this receipt is based on torchvision-feedstock: https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
-
 {% set name = "torchani" %}
 {% set version = "2.2.1" %}
 {% set torchani_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
@@ -50,8 +48,6 @@ requirements:
     - h5py
     - numpy
     - pytorch
-    # Notes: pin_compatible could be removed if we drop pytorch 1.8.0 support
-    # https://github.com/conda-forge/torchani-feedstock/pull/2#discussion_r739808104
     - {{ pin_compatible('pytorch-gpu', max_pin='x.x.x') }}  # [cuda_compiler_version != "None"]
     - {{ pin_compatible('pytorch-cpu', max_pin='x.x.x') }}  # [cuda_compiler_version == "None"]
 
@@ -79,6 +75,7 @@ test:
     - expecttest
   commands:
     - python -m pip install pkbar                                             # [linux64]
+    # download testing datasets
     - ./download.sh                                                           # [linux64]
     # broken symlink that got ignored when copying
     - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [linux64]
