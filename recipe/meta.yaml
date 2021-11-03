@@ -1,7 +1,7 @@
 # Notes: this receipt is based on torchvision-feedstock:
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
-{% set version = "2.2.1" %}
+{% set version = "2.2.2" %}
 {% set torchani_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -10,7 +10,7 @@ package:
 
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
-  sha256: c4f299a586518c57b17332309f803e6ae34c1b7a4b48d542bd6c46e9c4f8d146
+  sha256: 525275f314a63421f27996446f39ef5f6fee5d82442566ed6c71a61e4062fc6f
 
 build:
   number: 0
