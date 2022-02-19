@@ -14,7 +14,7 @@ source:
 
 build:
   number: 1
-  skip: true  # [win and cuda_compiler_version != "None"]
+  skip: true  # [win]
   string: py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}                                                  # [cuda_compiler_version == "None"]
   string: py{{ CONDA_PY }}cuda{{ cuda_compiler_version|replace('.', '') }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}  # [cuda_compiler_version != "None"]
   script_env:
