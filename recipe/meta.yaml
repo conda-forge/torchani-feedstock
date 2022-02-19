@@ -47,6 +47,8 @@ requirements:
   run:
     - python
     - pip
+    - setuptools ==59.5.0
+    - setuptools_scm ==6.3.2
     - importlib_metadata
     - lark-parser
     - requests
