@@ -33,7 +33,8 @@ requirements:
   host:
     - python
     - pip
-    - setuptools_scm ==6.3.2
+    - setuptools ==59.5.0
+    - setuptools_scm
     - importlib_metadata
     - numpy
     - pytorch
