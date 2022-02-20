@@ -42,11 +42,11 @@ requirements:
     - setuptools_scm ==6.3.2
     - importlib_metadata
     - pytorch
-    - pytorch-gpu {{ pytorch_version }}   # [cuda_compiler_version != "None"]
-    - pytorch-cpu {{ pytorch_version }}   # [cuda_compiler_version == "None"]
+    - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
+    - pytorch-cpu {{ pytorch_version }}  # [cuda_compiler_version == "None"]
     # cuda 10.2 does not have cub, which need to be manually downloaded in setup.py
-    - wget                                # [cuda_compiler_version == "10.2"]
-    - unzip                               # [cuda_compiler_version == "10.2"]
+    - wget                               # [cuda_compiler_version == "10.2"]
+    - unzip                              # [cuda_compiler_version == "10.2"]
 
   run:
     - python

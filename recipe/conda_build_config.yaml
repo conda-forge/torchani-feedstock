@@ -1,6 +1,9 @@
 pytorch_version:
   - 1.9.1
   - 1.10.0
+  - 1.10.2
+# the pinning of c_compiler_version (10) does not work for cuda 11.2
+# https://github.com/conda-forge/conda-forge-pinning-feedstock/blob/master/recipe/conda_build_config.yaml
 c_compiler_version:            # [unix]
   - 12                         # [osx]
   - 10                         # [linux]
