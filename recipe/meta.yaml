@@ -13,7 +13,7 @@ source:
   sha256: 525275f314a63421f27996446f39ef5f6fee5d82442566ed6c71a61e4062fc6f
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
   string: py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}                                                  # [cuda_compiler_version == "None"]
   string: py{{ CONDA_PY }}cuda{{ cuda_compiler_version|replace('.', '') }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}  # [cuda_compiler_version != "None"]
@@ -27,15 +27,21 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
-    - sysroot_linux-64 ==2.17                # [linux64]
+    - {{ compiler('cuda') }}              # [cuda_compiler_version != "None"]
+    - sysroot_linux-64 ==2.17             # [linux64]
+    - cross-python_{{ target_platform }}  # [build_platform != target_platform]
+    - python                              # [build_platform != target_platform]
+    - numpy                               # [build_platform != target_platform]
+    - cython                              # [build_platform != target_platform]
 
   host:
     - python
-    - pip
-    - setuptools_scm
-    - importlib_metadata
     - numpy
+    - pip
+    # TODO pinning setuptools because of https://stackoverflow.com/a/70520199 
+    - setuptools ==59.5.0
+    - setuptools_scm ==6.3.2
+    - importlib_metadata
     - pytorch
     - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
     - pytorch-cpu {{ pytorch_version }}  # [cuda_compiler_version == "None"]
@@ -46,6 +52,8 @@ requirements:
   run:
     - python
     - pip
+    - setuptools ==59.5.0
+    - setuptools_scm ==6.3.2
     - importlib_metadata
     - lark-parser
     - requests
