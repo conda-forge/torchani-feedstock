@@ -2,7 +2,9 @@
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
 {% set version = "2.2.2" %}
-{% set torchani_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
+# see github.com/conda-forge/conda-forge.github.io/issues/1059 for naming discussion
+{% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
+
 
 package:
   name: torchani
@@ -15,8 +17,8 @@ source:
 build:
   number: 1
   skip: true  # [win]
-  string: py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}                                                  # [cuda_compiler_version == "None"]
-  string: py{{ CONDA_PY }}cuda{{ cuda_compiler_version|replace('.', '') }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ torchani_proc_type }}  # [cuda_compiler_version != "None"]
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
+  string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                      # [cuda_compiler_version == "None"]
   script_env:
   - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}
   script:
@@ -33,22 +35,20 @@ requirements:
     - python                              # [build_platform != target_platform]
     - numpy                               # [build_platform != target_platform]
     - cython                              # [build_platform != target_platform]
-
   host:
     - python
     - numpy
     - pip
-    # TODO pinning setuptools because of https://stackoverflow.com/a/70520199 
+    # TODO pinning setuptools because of https://stackoverflow.com/a/70520199
+    # Can remove pinning when pytorch gets to 1.11
     - setuptools ==59.5.0
     - setuptools_scm ==6.3.2
     - importlib_metadata
     - pytorch
-    - pytorch-gpu {{ pytorch_version }}  # [cuda_compiler_version != "None"]
-    - pytorch-cpu {{ pytorch_version }}  # [cuda_compiler_version == "None"]
+    - pytorch =*={{ torch_proc_type }}*
     # cuda 10.2 does not have cub, which need to be manually downloaded in setup.py
     - wget                               # [cuda_compiler_version == "10.2"]
     - unzip                              # [cuda_compiler_version == "10.2"]
-
   run:
     - python
     - pip
@@ -58,10 +58,18 @@ requirements:
     - lark-parser
     - requests
     - h5py
-    - numpy
-    - pytorch
-    - {{ pin_compatible('pytorch-gpu', max_pin='x.x.x') }}  # [cuda_compiler_version != "None"]
-    - {{ pin_compatible('pytorch-cpu', max_pin='x.x.x') }}  # [cuda_compiler_version == "None"]
+    - {{ pin_compatible('numpy') }}
+  run_constrained:
+    # 2022/02/05 hmaarrfk
+    # While conda packaging seems to allow us to specify
+    # constraints on the same package in different lines
+    # the resulting package doesn't have the ability to
+    # be specified in multiples lines
+    # This makes it tricky to use run_exports
+    # we add the GPU constraint in the run_constrained
+    # to allow us to have "two" constraints on the
+    # running package
+    - pytorch =*={{ torch_proc_type }}*
 
 test:
   imports:
