@@ -296,5 +296,6 @@ Feedstock Maintainers
 =====================
 
 * [@hadim](https://github.com/hadim/)
+* [@mikemhenry](https://github.com/mikemhenry/)
 * [@yueyericardo](https://github.com/yueyericardo/)
 
