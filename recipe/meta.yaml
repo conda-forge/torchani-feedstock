@@ -13,9 +13,11 @@ package:
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
   sha256: 525275f314a63421f27996446f39ef5f6fee5d82442566ed6c71a61e4062fc6f
+  patches:
+    - patches/back_port_pr_603.patch
 
 build:
-  number: 3
+  number: 4
   skip: true  # [win]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                      # [cuda_compiler_version == "None"]
@@ -39,9 +41,7 @@ requirements:
     - python
     - numpy
     - pip
-    # TODO pinning setuptools because of https://stackoverflow.com/a/70520199
-    # Can remove pinning when pytorch gets to 1.11
-    - setuptools ==59.5.0
+    - setuptools
     - setuptools_scm ==6.3.2
     - importlib_metadata
     - pytorch
@@ -114,3 +114,4 @@ extra:
   recipe-maintainers:
     - hadim
     - yueyericardo
+    - mikemhenry
