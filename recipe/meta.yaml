@@ -100,8 +100,11 @@ test:
     # broken symlink that got ignored when copying
     - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [linux64]
     - ln -s ../download/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4      # [linux64]
-    # test
-    - cd tests; python -m pytest -v -s *.py                                   # [linux64]
+    {% set tests_to_skip = "not_a_real_test" %}
+    # Fixed in a release after 2.2.2
+    # https://github.com/aiqm/torchani/pull/619
+    {% set tests_to_skip = tests_to_skip + " or testAEVComputer" %}
+    - cd tests; python -m pytest -v -s *.py -k "not ({{ tests_to_skip }})"    # [linux64]
 
 about:
   home: https://github.com/aiqm/torchani
