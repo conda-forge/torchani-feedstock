@@ -15,6 +15,7 @@ source:
   sha256: 525275f314a63421f27996446f39ef5f6fee5d82442566ed6c71a61e4062fc6f
   patches:
     - patches/back_port_pr_603.patch
+    - patches/back_port_pr_619.patch
 
 build:
   number: 6
