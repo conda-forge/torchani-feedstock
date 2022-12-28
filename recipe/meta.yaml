@@ -50,9 +50,6 @@ requirements:
     - importlib_metadata
     - pytorch
     - pytorch =*={{ torch_proc_type }}*
-    # cuda 10.2 does not have cub, which need to be manually downloaded in setup.py
-    - wget                               # [cuda_compiler_version == "10.2"]
-    - unzip                              # [cuda_compiler_version == "10.2"]
   run:
     - python
     - pip
