@@ -12,10 +12,7 @@ package:
 
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
-  sha256: 525275f314a63421f27996446f39ef5f6fee5d82442566ed6c71a61e4062fc6f
-  patches:
-    - patches/back_port_pr_603.patch
-    - patches/back_port_pr_619.patch
+  sha256: ea5bd1f5bc9a6e26cb6d2a2efe818e9615f09d01d407a3b5d0cc0c4b6f017f09
 
 build:
   number: 8
