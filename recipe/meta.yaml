@@ -5,6 +5,12 @@
 # see github.com/conda-forge/conda-forge.github.io/issues/1059 for naming discussion
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
+{% if cuda_compiler_version in (None, "None", True, False) %}
+{% set cuda_major = 0 %}
+{% else %}
+{% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
+{% endif %}
+
 
 package:
   name: torchani
@@ -13,6 +19,8 @@ package:
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
   sha256: ea5bd1f5bc9a6e26cb6d2a2efe818e9615f09d01d407a3b5d0cc0c4b6f017f09
+  patches:
+    - 0001-cpp17.patch
 
 build:
   number: 4
