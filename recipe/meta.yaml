@@ -18,6 +18,8 @@ package:
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
   sha256: 8b9afee45494d3f0dad56ec57d40ec3095948d83c84fc1bb6e36748d3c33ac0d
+  patches:
+    - patches/remove-distutils.patch
 
 build:
   number: 5
