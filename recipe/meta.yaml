@@ -30,6 +30,9 @@ build:
   script_env:
   - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}
   script:
+    # The torchani setup.py does not look in the conda folder for includes.
+    # I added this so that nvcc finds $PREFIX/include/crypt.h
+    - "export CPATH={{ PREFIX }}/include"
     - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version != "None"]
     - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version == "None"]
 
