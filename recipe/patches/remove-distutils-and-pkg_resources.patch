@@ -21,18 +21,21 @@ index 108cd73..043389f 100644
  with open("README.md", "r") as fh:
      long_description = fh.read()
 diff --git a/torchani/__init__.py b/torchani/__init__.py
-index a94853d..71c34f0 100644
+index a94853d..b19a83b 100644
 --- a/torchani/__init__.py
 +++ b/torchani/__init__.py
-@@ -36,11 +36,12 @@ from . import utils
+@@ -36,11 +36,15 @@ from . import utils
  from . import neurochem
  from . import models
  from . import units
 -from pkg_resources import get_distribution, DistributionNotFound
-+from pkg_resources import DistributionNotFound
 +from importlib.metadata import version
  import warnings
  
++
++class DistributionNotFound(Exception):
++    pass
++
  try:
 -    __version__ = get_distribution(__name__).version
 +    __version__ = version(__name__)
