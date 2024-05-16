@@ -1,10 +1,15 @@
 # Notes: this receipt is based on torchvision-feedstock:
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
-{% set version = "2.2.2" %}
+{% set version = "2.2.4" %}
 # see github.com/conda-forge/conda-forge.github.io/issues/1059 for naming discussion
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
+{% if cuda_compiler_version in (None, "None", True, False) %}
+{% set cuda_major = 0 %}
+{% else %}
+{% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
+{% endif %}
 
 package:
   name: torchani
@@ -12,16 +17,24 @@ package:
 
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
-  sha256: 525275f314a63421f27996446f39ef5f6fee5d82442566ed6c71a61e4062fc6f
+  sha256: 8b9afee45494d3f0dad56ec57d40ec3095948d83c84fc1bb6e36748d3c33ac0d
+  patches:
+    - patches/remove-distutils-and-pkg_resources.patch
 
 build:
-  number: 3
+  number: 6
   skip: true  # [win]
+  # as of pytorch 1.13, conda-forge only builds for CUDA 11.2+, see
+  # https://github.com/conda-forge/conda-forge-pinning-feedstock/issues/3491
+  skip: true  # [cuda_compiler_version in ("10.2", "11.0", "11.1")]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                      # [cuda_compiler_version == "None"]
   script_env:
   - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}
   script:
+    # The torchani setup.py does not look in the conda folder for includes.
+    # I added this so that nvcc finds $PREFIX/include/crypt.h
+    - "export CPATH={{ PREFIX }}/include"
     - "{{ PYTHON }} -m pip install . --global-option='--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version != "None"]
     - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                    # [cuda_compiler_version == "None"]
 
@@ -30,29 +43,29 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}              # [cuda_compiler_version != "None"]
-    - sysroot_linux-64 ==2.17             # [linux64]
     - cross-python_{{ target_platform }}  # [build_platform != target_platform]
     - python                              # [build_platform != target_platform]
     - numpy                               # [build_platform != target_platform]
     - cython                              # [build_platform != target_platform]
+    - cuda-version =={{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
+    - {{ stdlib("c") }}
   host:
     - python
+    # Only needed for Python 3.8 and below
+    # xref: https://github.com/conda-forge/linux-sysroot-feedstock/issues/52
+    - libxcrypt  # [py <= 38]
     - numpy
     - pip
-    # TODO pinning setuptools because of https://stackoverflow.com/a/70520199
-    # Can remove pinning when pytorch gets to 1.11
-    - setuptools ==59.5.0
+    - setuptools
     - setuptools_scm ==6.3.2
     - importlib_metadata
     - pytorch
     - pytorch =*={{ torch_proc_type }}*
-    # cuda 10.2 does not have cub, which need to be manually downloaded in setup.py
-    - wget                               # [cuda_compiler_version == "10.2"]
-    - unzip                              # [cuda_compiler_version == "10.2"]
+    - cuda-version =={{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')] 
   run:
     - python
     - pip
-    - setuptools ==59.5.0
+    - setuptools ==65.3.0
     - setuptools_scm ==6.3.2
     - importlib_metadata
     - lark-parser
@@ -60,15 +73,8 @@ requirements:
     - h5py
     - {{ pin_compatible('numpy') }}
   run_constrained:
-    # 2022/02/05 hmaarrfk
-    # While conda packaging seems to allow us to specify
-    # constraints on the same package in different lines
-    # the resulting package doesn't have the ability to
-    # be specified in multiples lines
-    # This makes it tricky to use run_exports
-    # we add the GPU constraint in the run_constrained
-    # to allow us to have "two" constraints on the
-    # running package
+    # additional run constraint to the one from the (version-only) run_export;
+    # constraining the CPU builds to CPU pytorch isn't 100% necessary, but cleaner
     - pytorch =*={{ torch_proc_type }}*
 
 test:
@@ -96,13 +102,11 @@ test:
     - pkbar
   commands:
     # download testing datasets
-    - ./download.sh                                                           # [linux64]
+    - ./download.sh                                                           # [unix]
     # broken symlink that got ignored when copying
-    - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [linux64]
-    - ln -s ../download/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4      # [linux64]
-    # test
-    - cd tests; python -m pytest -v -s *.py                                   # [linux64]
-
+    - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [unix]
+    - ln -s ../download/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4      # [unix]
+    - cd tests; python -m pytest -v -s *.py  # [unix]
 about:
   home: https://github.com/aiqm/torchani
   license: MIT
@@ -112,5 +116,5 @@ about:
 
 extra:
   recipe-maintainers:
-    - hadim
     - yueyericardo
+    - mikemhenry
