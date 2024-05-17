@@ -57,7 +57,7 @@ requirements:
     - numpy
     - pip
     - setuptools
-    - setuptools_scm ==6.3.2
+    - setuptools_scm
     - importlib_metadata
     - pytorch
     - pytorch =*={{ torch_proc_type }}*
@@ -65,8 +65,8 @@ requirements:
   run:
     - python
     - pip
-    - setuptools ==65.3.0
-    - setuptools_scm ==6.3.2
+    - setuptools
+    - setuptools_scm
     - importlib_metadata
     - lark-parser
     - requests
