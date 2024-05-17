@@ -1,0 +1,11 @@
+diff --git a/download.sh b/download.sh
+index 7d9faf3..17cd67c 100755
+--- a/download.sh
++++ b/download.sh
+@@ -1,5 +1,5 @@
+ #!/bin/bash
+ 
+ # download the data
+-wget https://www.dropbox.com/sh/2c8zdqc1hrqsgwy/AAD6l24ngoiFa6DRapF6HPk5a/ -O download.zip
++wget --retry-on-http-error=500 https://www.dropbox.com/sh/2c8zdqc1hrqsgwy/AAD6l24ngoiFa6DRapF6HPk5a/ -O download.zip
+ unzip download.zip -d download || [[ $? == 2 ]]  # unzip return 2 for dropbox created zip file
