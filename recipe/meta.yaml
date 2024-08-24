@@ -46,7 +46,6 @@ requirements:
     - {{ compiler('cuda') }}              # [cuda_compiler_version != "None"]
     - cross-python_{{ target_platform }}  # [build_platform != target_platform]
     - python                              # [build_platform != target_platform]
-    - numpy                               # [build_platform != target_platform]
     - cython                              # [build_platform != target_platform]
     - cuda-version =={{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
     - {{ stdlib("c") }}
@@ -55,7 +54,6 @@ requirements:
     # Only needed for Python 3.8 and below
     # xref: https://github.com/conda-forge/linux-sysroot-feedstock/issues/52
     - libxcrypt  # [py <= 38]
-    - numpy
     - pip
     - setuptools
     - setuptools_scm
@@ -72,6 +70,12 @@ requirements:
     - lark-parser
     - requests
     - h5py
+    # While there is no strict lower bound on numpy
+    # Historically the package has had a lower bound on numpy 1.22
+    # so we add this to avoid a surprise downgrade
+    # hmaarrfk -- 2024/08
+    # https://conda-metadata-app.streamlit.app/?q=conda-forge%2Flinux-64%2Ftorchani-2.2.4-cuda120py39h4b2872a_8.conda
+    - numpy >=1.22
   run_constrained:
     # additional run constraint to the one from the (version-only) run_export;
     # constraining the CPU builds to CPU pytorch isn't 100% necessary, but cleaner
@@ -94,8 +98,6 @@ test:
     - tensorboard
     - tqdm
     - ase
-    - h5py
-    - pillow
     - pyyaml
     - pytest
     - expecttest
