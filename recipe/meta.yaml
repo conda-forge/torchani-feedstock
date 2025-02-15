@@ -89,7 +89,7 @@ test:
     - unzip
     - tensorboard
     - tqdm
-    - ase
+    - ase <3.24.0
     - h5py
     - pillow
     - pyyaml
