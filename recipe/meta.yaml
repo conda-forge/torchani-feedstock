@@ -40,6 +40,7 @@ build:
 
 requirements:
   build:
+    - {{ stdlib("c") }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}              # [cuda_compiler_version != "None"]
@@ -48,13 +49,8 @@ requirements:
     - numpy                               # [build_platform != target_platform]
     - cython                              # [build_platform != target_platform]
     - cuda-version =={{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
-    - {{ stdlib("c") }}
   host:
     - python
-    # Only needed for Python 3.8 and below
-    # xref: https://github.com/conda-forge/linux-sysroot-feedstock/issues/52
-    - libxcrypt  # [py <= 38]
-    - numpy
     - pip
     - setuptools
     - setuptools_scm
