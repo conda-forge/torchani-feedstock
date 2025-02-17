@@ -23,7 +23,7 @@ source:
     - patches/make_download_robust.patch
 
 build:
-  number: 11
+  number: 12
   skip: true  # [win]
   # as of pytorch 1.13, conda-forge only builds for CUDA 11.2+, see
   # https://github.com/conda-forge/conda-forge-pinning-feedstock/issues/3491
@@ -41,6 +41,7 @@ build:
 
 requirements:
   build:
+    - {{ stdlib("c") }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}              # [cuda_compiler_version != "None"]
@@ -48,12 +49,8 @@ requirements:
     - python                              # [build_platform != target_platform]
     - cython                              # [build_platform != target_platform]
     - cuda-version =={{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
-    - {{ stdlib("c") }}
   host:
     - python
-    # Only needed for Python 3.8 and below
-    # xref: https://github.com/conda-forge/linux-sysroot-feedstock/issues/52
-    - libxcrypt  # [py <= 38]
     - pip
     - setuptools
     - setuptools_scm
@@ -97,7 +94,7 @@ test:
     - unzip
     - tensorboard
     - tqdm
-    - ase
+    - ase <3.24.0
     - h5py
     - pillow
     - pyyaml
