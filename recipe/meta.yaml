@@ -48,6 +48,7 @@ requirements:
     - python                              # [build_platform != target_platform]
     - cython                              # [build_platform != target_platform]
     - cuda-version =={{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
+    - setuptools_scm
   host:
     - python
     - pip
