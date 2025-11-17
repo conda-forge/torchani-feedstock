@@ -1,7 +1,7 @@
 # Notes: this receipt is based on torchvision-feedstock:
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
-{% set version = "2.2.4" %}
+{% set version = "2.7.9" %}
 # see github.com/conda-forge/conda-forge.github.io/issues/1059 for naming discussion
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -35,8 +35,8 @@ build:
     # The torchani setup.py does not look in the conda folder for includes.
     # I added this so that nvcc finds $PREFIX/include/crypt.h
     - "export CPATH={{ PREFIX }}/include"
-    - "{{ PYTHON }} -m pip install . --config-settings='--global-option=--cuaev-all-sms' -vvv --no-deps"  # [cuda_compiler_version != "None"]
-    - "{{ PYTHON }} -m pip install . -vvv --no-deps"                                     # [cuda_compiler_version == "None"]
+    - "export TORCHANI_BUILD_ALL_SMS=1"  # [cuda_compiler_version != "None"]
+    - "{{ PYTHON }} -m pip install . -vvv --no-deps --no-build-isolation"  # [cuda_compiler_version == "None"]
 
 requirements:
   build:
@@ -54,25 +54,33 @@ requirements:
     - pip
     - setuptools
     - setuptools_scm
-    - importlib-metadata
+    - typing_extensions>=4.0.0
     - pytorch
-    - pytorch =*={{ torch_proc_type }}*
+    - pytorch * [build=${{ torch_proc_type }}*]
     - cuda-version =={{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')] 
   run:
     - python
     - pip
     - setuptools
     - setuptools_scm
-    - importlib-metadata
-    - lark-parser
-    - requests
+    - typing_extensions>=4.0.0
+    - ase
+    - ninja
     - h5py
+    - tqdm
+    - typer
+    - rich
+    - pandas  # Parquet backend
+    - pyarrow  # Parquet backend
+    - zarr<3  # Zarr backend
+    - huggingface_hub
+
     # While there is no strict lower bound on numpy
     # Historically the package has had a lower bound on numpy 1.22
     # so we add this to avoid a surprise downgrade
     # hmaarrfk -- 2024/08
     # https://conda-metadata-app.streamlit.app/?q=conda-forge%2Flinux-64%2Ftorchani-2.2.4-cuda120py39h4b2872a_8.conda
-    - numpy >=1.22
+    - numpy>=2
   run_constrained:
     # additional run constraint to the one from the (version-only) run_export;
     # constraining the CPU builds to CPU pytorch isn't 100% necessary, but cleaner
@@ -92,21 +100,15 @@ test:
   requires:
     - wget
     - unzip
-    - tensorboard
     - tqdm
-    - ase <3.24.0
+    - ase
     - h5py
-    - pillow
-    - pyyaml
     - pytest
     - expecttest
-    - pkbar
+    - parameterized
   commands:
     # download testing datasets
-    - ./download.sh                                                           # [unix]
-    # broken symlink that got ignored when copying
-    - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [unix]
-    - ln -s ../download/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4      # [unix]
+    - ./download-dev-data.sh  # [unix]
     - cd tests; python -m pytest -v -s *.py  # [unix]
 about:
   home: https://github.com/aiqm/torchani
@@ -117,5 +119,6 @@ about:
 
 extra:
   recipe-maintainers:
+    - IgnacioJPickering
     - yueyericardo
     - mikemhenry
