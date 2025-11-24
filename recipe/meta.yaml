@@ -94,6 +94,7 @@ test:
     - wget
     - unzip
     - tensorboard
+    - parameterized
     - pillow
     - pyyaml
     - pytest
