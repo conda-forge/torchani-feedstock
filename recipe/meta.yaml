@@ -62,16 +62,18 @@ requirements:
     - pip
     - setuptools
     - setuptools_scm
-    - importlib-metadata
-    - lark-parser
-    - requests
+    - ase
     - h5py
-    # While there is no strict lower bound on numpy
-    # Historically the package has had a lower bound on numpy 1.22
-    # so we add this to avoid a surprise downgrade
-    # hmaarrfk -- 2024/08
-    # https://conda-metadata-app.streamlit.app/?q=conda-forge%2Flinux-64%2Ftorchani-2.2.4-cuda120py39h4b2872a_8.conda
-    - numpy >=1.22
+    - huggingface_hub
+    - numpy
+    - pandas
+    - pyarrow
+    - requests
+    - rich
+    - tqdm
+    - typer
+    - typing_extensions >=4.0
+    - zarr <3
   run_constrained:
     # additional run constraint to the one from the (version-only) run_export;
     # constraining the CPU builds to CPU pytorch isn't 100% necessary, but cleaner
@@ -90,9 +92,6 @@ test:
     - wget
     - unzip
     - tensorboard
-    - tqdm
-    - ase <3.24.0
-    - h5py
     - pillow
     - pyyaml
     - pytest
