@@ -34,6 +34,8 @@ build:
     - export CPATH={{ PREFIX }}/include
     - {{ PYTHON }} -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms    # [cuda_compiler_version != "None"]
     - {{ PYTHON }} -m pip install . -vvv --no-deps                                                  # [cuda_compiler_version == "None"]
+    - mkdir -p ${SP_DIR}/torchani/resources
+    - cp -R ./torchani/resources/* ${SP_DIR}/torchani/resources
 
 requirements:
   build:
@@ -80,7 +82,6 @@ test:
     - torchani
     - torchani.cuaev                     # [cuda_compiler_version != "None"]
   source_files:
-    - torchani/resources/*
     - tests/*
     - tools/*
     - download.sh
