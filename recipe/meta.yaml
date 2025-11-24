@@ -36,6 +36,7 @@ build:
     - {{ PYTHON }} -m pip install . -vvv --no-deps                                                  # [cuda_compiler_version == "None"]
     - mkdir -p ${SP_DIR}/torchani/resources
     - cp -R ./torchani/resources/* ${SP_DIR}/torchani/resources
+    - cp ./torchani/datasets/builtin_datasets.json ${SP_DIR}/torchani/datasets/builtin_datasets.json
 
 requirements:
   build:
