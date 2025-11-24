@@ -37,6 +37,7 @@ build:
     - mkdir -p ${SP_DIR}/torchani/resources
     - cp -R ./torchani/resources/* ${SP_DIR}/torchani/resources
     - cp ./torchani/datasets/builtin_datasets.json ${SP_DIR}/torchani/datasets/builtin_datasets.json
+    - cp ./torchani/datasets/md5s.csv ${SP_DIR}/torchani/datasets/md5s.csv
 
 requirements:
   build:
