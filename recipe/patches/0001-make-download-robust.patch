@@ -1,0 +1,21 @@
+From 1208e4c90340046c8e30f009b637dcd9a5b64903 Mon Sep 17 00:00:00 2001
+From: Mike Henry <11765982+mikemhenry@users.noreply.github.com>
+Date: Fri, 17 May 2024 10:16:47 -0700
+Subject: [PATCH] make download robust
+
+---
+ download.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/download.sh b/download.sh
+index 4a2975f..a8cfdd9 100755
+--- a/download.sh
++++ b/download.sh
+@@ -2,6 +2,6 @@
+ 
+ # Download the data
+ echo "Downloading data ..."
+-wget --no-verbose https://www.dropbox.com/sh/2c8zdqc1hrqsgwy/AAD6l24ngoiFa6DRapF6HPk5a/ -O download.zip
++wget --retry-on-http-error=500 --no-verbose https://www.dropbox.com/sh/2c8zdqc1hrqsgwy/AAD6l24ngoiFa6DRapF6HPk5a/ -O download.zip
+ echo "Extracting data ..."
+ unzip -q download.zip -d download || [[ $? == 2 ]]  # unzip return 2 for dropbox created zip file
