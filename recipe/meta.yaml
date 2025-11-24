@@ -85,7 +85,6 @@ test:
     - tools/*
     - download.sh
     - dataset/*
-    - test_requirements.txt
   requires:
     - wget
     - unzip
