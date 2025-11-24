@@ -19,8 +19,8 @@ source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
   sha256: cbafc8fc5ca77c8318daafa4c75958b279a64d82c016961d083406009e9b0720
   patches:
-    - patches/remove-distutils-and-pkg_resources.patch
-    - patches/make_download_robust.patch
+    - patches/0001-remove-distutils-and-pkg_resources.patch
+    - patches/0002-make-download-robust.patch
 
 build:
   number: 0
