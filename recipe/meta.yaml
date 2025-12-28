@@ -91,7 +91,6 @@ test:
     - tests/*
     - tools/*
     - download-dev-data.sh
-    - dataset/*
   requires:
     - wget
     - unzip
