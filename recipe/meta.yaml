@@ -90,7 +90,7 @@ test:
   source_files:
     - tests/*
     - tools/*
-    - download.sh
+    - download-dev-data.sh
     - dataset/*
   requires:
     - wget
@@ -104,10 +104,10 @@ test:
     - pkbar
   commands:
     # download testing datasets
-    - ./download.sh                                                           # [unix]
+    - ./download-dev-data.sh                                                        # [unix]
     # broken symlink that got ignored when copying
-    - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [unix]
-    - ln -s ../download/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4      # [unix]
+    - ln -s ../dev-data/hf-data/dataset/ani-1x/ dataset/ani-1x                      # [unix]
+    - ln -s ../dev-data/hf-data/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4    # [unix]
     {% set tests_to_skip = "_not_a_real_test" %}
     {% set tests_to_skip = tests_to_skip ~ " or testANIr2s" %}
     {% set tests_to_skip = tests_to_skip ~ " or testBuiltins" %}

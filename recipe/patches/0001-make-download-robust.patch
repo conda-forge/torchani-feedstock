@@ -1,21 +1,22 @@
-From 1208e4c90340046c8e30f009b637dcd9a5b64903 Mon Sep 17 00:00:00 2001
+From 3fd460da1056bc36198c2a367c751d7235db72b6 Mon Sep 17 00:00:00 2001
 From: Mike Henry <11765982+mikemhenry@users.noreply.github.com>
 Date: Fri, 17 May 2024 10:16:47 -0700
 Subject: [PATCH] make download robust
 
 ---
- download.sh | 2 +-
+ download-dev-data.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/download.sh b/download.sh
-index 4a2975f..a8cfdd9 100755
---- a/download.sh
-+++ b/download.sh
-@@ -2,6 +2,6 @@
- 
+diff --git a/download-dev-data.sh b/download-dev-data.sh
+index 014689c..f09fe7b 100755
+--- a/download-dev-data.sh
++++ b/download-dev-data.sh
+@@ -3,7 +3,7 @@
  # Download the data
+ mkdir dev-data
  echo "Downloading data ..."
--wget --no-verbose https://www.dropbox.com/sh/2c8zdqc1hrqsgwy/AAD6l24ngoiFa6DRapF6HPk5a/ -O download.zip
-+wget --retry-on-http-error=500 --no-verbose https://www.dropbox.com/sh/2c8zdqc1hrqsgwy/AAD6l24ngoiFa6DRapF6HPk5a/ -O download.zip
+-wget --no-verbose https://huggingface.co/datasets/roitberg-group/torchani-tests-pickled-files/resolve/main/download.zip
++wget --retry-on-http-error=500 --no-verbose https://huggingface.co/datasets/roitberg-group/torchani-tests-pickled-files/resolve/main/download.zip
  echo "Extracting data ..."
- unzip -q download.zip -d download || [[ $? == 2 ]]  # unzip return 2 for dropbox created zip file
+ unzip -q download.zip -d dev-data/hf-data || [[ $? == 2 ]]  # unzip return 2 for dropbox created zip file
+ rm download.zip
