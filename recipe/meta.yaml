@@ -104,9 +104,6 @@ test:
   commands:
     # download testing datasets
     - ./download-dev-data.sh                                                        # [unix]
-    # broken symlink that got ignored when copying
-    - ln -s ../dev-data/hf-data/dataset/ani-1x/ dataset/ani-1x                      # [unix]
-    - ln -s ../dev-data/hf-data/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4    # [unix]
     {% set tests_to_skip = "_not_a_real_test" %}
     {% set tests_to_skip = tests_to_skip ~ " or testANIr2s" %}
     {% set tests_to_skip = tests_to_skip ~ " or testBuiltins" %}
