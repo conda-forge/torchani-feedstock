@@ -87,7 +87,6 @@ requirements:
 test:
   imports:
     - torchani
-    - torchani.cuaev                     # [cuda_compiler_version != "None"]
   source_files:
     - tests/*
     - tools/*
