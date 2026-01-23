@@ -1,7 +1,7 @@
 # Notes: this receipt is based on torchvision-feedstock:
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
-{% set version = "2.7.5" %}
+{% set version = "2.7.9" %}
 # see github.com/conda-forge/conda-forge.github.io/issues/1059 for naming discussion
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -17,7 +17,7 @@ package:
 
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
-  sha256: a34d72cef63d8e27f210490d55b735a68feb7f58e65bb08d020bfa6ed344046e
+  sha256: e00378a2b687e9ffed04ce2edc17e1b7bde1e95e866426d7324e52707ed791af
   patches:
     - patches/0001-make-download-robust.patch
 
