@@ -1,7 +1,7 @@
 # Notes: this receipt is based on torchvision-feedstock:
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
-{% set version = "2.6" %}
+{% set version = "2.7.5" %}
 # see github.com/conda-forge/conda-forge.github.io/issues/1059 for naming discussion
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -17,7 +17,7 @@ package:
 
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
-  sha256: cbafc8fc5ca77c8318daafa4c75958b279a64d82c016961d083406009e9b0720
+  sha256: a34d72cef63d8e27f210490d55b735a68feb7f58e65bb08d020bfa6ed344046e
   patches:
     - patches/0001-make-download-robust.patch
 
@@ -90,8 +90,7 @@ test:
   source_files:
     - tests/*
     - tools/*
-    - download.sh
-    - dataset/*
+    - download-dev-data.sh
   requires:
     - wget
     - unzip
@@ -104,10 +103,7 @@ test:
     - pkbar
   commands:
     # download testing datasets
-    - ./download.sh                                                           # [unix]
-    # broken symlink that got ignored when copying
-    - ln -s ../download/dataset/ani-1x/ dataset/ani-1x                        # [unix]
-    - ln -s ../download/dataset/ani1-up_to_gdb4/ dataset/ani1-up_to_gdb4      # [unix]
+    - ./download-dev-data.sh                                                        # [unix]
     {% set tests_to_skip = "_not_a_real_test" %}
     {% set tests_to_skip = tests_to_skip ~ " or testANIr2s" %}
     {% set tests_to_skip = tests_to_skip ~ " or testBuiltins" %}
