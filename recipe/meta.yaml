@@ -1,4 +1,3 @@
-{% set tests_to_skip = "_not_a_real_test" %}
 # Notes: this receipt is based on torchvision-feedstock:
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
