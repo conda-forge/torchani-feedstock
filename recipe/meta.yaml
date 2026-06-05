@@ -20,7 +20,9 @@ source:
   sha256: 4fb97f5305d84642717bac58e2a06e95a12f32fb4434302dc61802077263229e
   patches:
     - patches/0001-make-download-robust.patch
+    # backport https://github.com/aiqm/torchani/pull/684
     - patches/0002-fix-pytorch-version-comparison.patch
+    - patches/0003-CUDA-13.0-GPU-arch-fix.patch             # [(cuda_compiler_version or "").startswith("13")]
 
 build:
   number: 1

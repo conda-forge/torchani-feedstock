@@ -1,0 +1,40 @@
+From c42bda4dab6d5dcd12421b4b5f95e69c8099d181 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Fri, 5 Jun 2026 16:13:01 +1100
+Subject: [PATCH 3/3] CUDA 13.0 GPU arch fix
+
+---
+ setup.py | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index ddaf0d2..d45fb31 100644
+--- a/setup.py
++++ b/setup.py
+@@ -141,7 +141,7 @@ TORCHANI_FLAGS = {"ext", "ext-all-sms", "ext-debug", "ext-no-opt"}
+ # Ampere: 80, 86 (3d gen TensorCore)
+ # Ada Lovelace, Hopper: 89 (4th gen TensorCore)
+ # Blackwell: 100 (5th gen TensorCore)
+-SUPPORTED_SMS = {"60", "61", "70", "75", "80", "86", "89", "100"}
++SUPPORTED_SMS = {"75", "80", "86", "89", "100", "120"}
+ for sm in SUPPORTED_SMS:
+     TORCHANI_FLAGS.add(f"ext-sm{sm}")
+ 
+@@ -188,7 +188,7 @@ def setup_kwargs() -> tp.Dict[str, tp.Any]:
+     def collect_all_sms() -> tp.Set[str]:
+         print("-" * 75)
+         print("Will add all SMs torch supports")
+-        sms = {"60", "61", "70"}
++        sms = set()
+         cuda_ver = float(torch.version.cuda) if torch.version.cuda is not None else 0
+         if cuda_ver >= 10:
+             sms.add("75")
+@@ -199,6 +199,8 @@ def setup_kwargs() -> tp.Dict[str, tp.Any]:
+             sms.add("89")
+         if cuda_ver >= 12.8:
+             sms.add("100")
++        if cuda_ver >= 12.9:
++            sms.add("120")
+         return sms
+ 
+     def collect_compatible_sms() -> tp.Set[str]:
