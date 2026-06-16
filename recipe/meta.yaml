@@ -23,7 +23,7 @@ source:
     - patches/0003-CUDA-13.0-GPU-arch-fix.patch             # [(cuda_compiler_version or "").startswith("13")]
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
