@@ -75,6 +75,7 @@ requirements:
     - ase
     - h5py
     - huggingface_hub
+    - ninja
     - numpy
     - pandas
     - pyarrow
