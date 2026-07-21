@@ -121,6 +121,7 @@ about:
 
 extra:
   recipe-maintainers:
+    - jeongseok-meta
     - yueyericardo
     - mikemhenry
     - h-vetinari
