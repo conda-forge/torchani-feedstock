@@ -1,7 +1,8 @@
+{% set tests_to_skip = "_not_a_real_test" %}
 # Notes: this receipt is based on torchvision-feedstock:
 # https://github.com/conda-forge/torchvision-feedstock/blob/master/recipe/meta.yaml
 
-{% set version = "2.8.2" %}
+{% set version = "2.8.4" %}
 # see github.com/conda-forge/conda-forge.github.io/issues/1059 for naming discussion
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
@@ -17,7 +18,7 @@ package:
 
 source:
   url: https://github.com/aiqm/torchani/archive/refs/tags/{{ version }}.tar.gz
-  sha256: 4fb97f5305d84642717bac58e2a06e95a12f32fb4434302dc61802077263229e
+  sha256: dd27f69df811fc94fa324f7cc7223805b4d0819aec0d1809a82e4694804b1262
   patches:
     - patches/0001-make-download-robust.patch
     # backport https://github.com/aiqm/torchani/pull/684
@@ -25,7 +26,7 @@ source:
     - patches/0003-CUDA-13.0-GPU-arch-fix.patch             # [(cuda_compiler_version or "").startswith("13")]
 
 build:
-  number: 3
+  number: 0
   skip: true  # [win]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
