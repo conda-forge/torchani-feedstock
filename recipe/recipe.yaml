@@ -4,6 +4,7 @@ context:
   name: torchani
   version: "2.8.4"
   build_number: 3
+  torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
 
 package:
   name: ${{ name|lower }}
@@ -52,7 +53,7 @@ requirements:
         - python
         - cython
         - pytorch
-        - 'pytorch * ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}*'
+        - pytorch * ${{ torch_proc_type }}*
     - if: cuda_compiler_version != "None"
       then: cuda-version ==${{ cuda_compiler_version }}
     - setuptools_scm
@@ -63,15 +64,13 @@ requirements:
     - setuptools_scm
     - importlib-metadata
     - pytorch
-    - 'pytorch * ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}*'
+    - pytorch * ${{ torch_proc_type }}*
     - if: cuda_compiler_version != "None"
       then:
         - cuda-version ==${{ cuda_compiler_version }}
         - cuda-cudart-dev
   run:
-    - ${{ pin_compatible("python") }}
     - python
-    - python_abi * *_cp${{ python | version_to_buildstring }}
     - pip
     - setuptools
     - setuptools_scm
@@ -90,7 +89,7 @@ requirements:
     - zarr <3
   run_constraints:
     # Add a flavor constraint on top of PyTorch's version-only run export.
-    - 'pytorch * ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}*'
+    - pytorch * ${{ torch_proc_type }}*
 
 tests:
   - python:
