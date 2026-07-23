@@ -1,0 +1,136 @@
+schema_version: 1
+
+context:
+  name: torchani
+  version: "2.8.4"
+  build_number: 3
+  torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - url: https://github.com/aiqm/torchani/archive/refs/tags/${{ version }}.tar.gz
+    sha256: dd27f69df811fc94fa324f7cc7223805b4d0819aec0d1809a82e4694804b1262
+    patches:
+      - patches/0001-make-download-robust.patch
+      # Keep pip check enabled while satisfying the tool dependency through
+      # conda's executable ninja package instead of PyPI's Python metadata.
+      - patches/0004-remove-ninja-python-metadata.patch
+      - if: match(cuda_compiler_version, "13.*")
+        then: patches/0003-CUDA-13.0-GPU-arch-fix.patch
+
+build:
+  number: ${{ build_number }}
+  skip:
+    - win
+  string: ${{ "cuda" ~ (cuda_compiler_version | replace(".", "")) ~ "py" ~ (python | version_to_buildstring) ~ "h" ~ hash ~ "_" ~ build_number if cuda_compiler_version != "None" else "cpu_py" ~ (python | version_to_buildstring) ~ "h" ~ hash ~ "_" ~ build_number }}
+  script:
+    - export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
+    # TorchANI setup.py does not search the conda include directory; this lets
+    # nvcc find headers such as $PREFIX/include/crypt.h.
+    - export CPATH="${PREFIX}/include"
+    - if: cuda_compiler_version != "None"
+      then: $PYTHON -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms
+    - if: cuda_compiler_version == "None"
+      then: $PYTHON -m pip install . -vvv --no-deps
+    - mkdir -p "${SP_DIR}/torchani/resources"
+    - cp -R ./torchani/resources/* "${SP_DIR}/torchani/resources"
+    - cp ./torchani/datasets/builtin_datasets.json "${SP_DIR}/torchani/datasets/builtin_datasets.json"
+    - cp ./torchani/datasets/md5s.csv "${SP_DIR}/torchani/datasets/md5s.csv"
+
+requirements:
+  build:
+    - ${{ stdlib("c") }}
+    - ${{ compiler("c") }}
+    - ${{ compiler("cxx") }}
+    - if: cuda_compiler_version != "None"
+      then: ${{ compiler("cuda") }}
+    - if: build_platform != target_platform
+      then:
+        - cross-python_${{ target_platform }}
+        - python
+        - cython
+        - pytorch
+        - pytorch * ${{ torch_proc_type }}*
+    - if: cuda_compiler_version != "None"
+      then: cuda-version ==${{ cuda_compiler_version }}
+    - setuptools_scm
+  host:
+    - python
+    - pip
+    - setuptools
+    - setuptools_scm
+    - importlib-metadata
+    - pytorch
+    - pytorch * ${{ torch_proc_type }}*
+    - if: cuda_compiler_version != "None"
+      then:
+        - cuda-version ==${{ cuda_compiler_version }}
+        - cuda-cudart-dev
+  run:
+    - python
+    - pip
+    - setuptools
+    - setuptools_scm
+    - ase
+    - h5py
+    - huggingface_hub
+    - ninja
+    - numpy
+    - pandas
+    - pyarrow
+    - requests
+    - rich
+    - tqdm
+    - typer
+    - typing_extensions >=4.0
+    - zarr <3
+  run_constraints:
+    # Add a flavor constraint on top of PyTorch's version-only run export.
+    - pytorch * ${{ torch_proc_type }}*
+
+tests:
+  - python:
+      imports:
+        - torchani
+  - requirements:
+      run:
+        - wget
+        - unzip
+        - tensorboard
+        - parameterized
+        - pillow
+        - pyyaml
+        - pytest
+        - expecttest
+        - pkbar
+    files:
+      source:
+        - tests/
+        - tools/
+        - download-dev-data.sh
+    script:
+      - ninja --version
+      # CUDA builds must ship every extension produced by ext-all-sms.
+      - if: cuda_compiler_version != "None"
+        then: python -c "import torchani.csrc as csrc; assert all((csrc.CUAEV_IS_INSTALLED, csrc.MNP_IS_INSTALLED, csrc.CLIST_IS_INSTALLED))"
+      - if: unix
+        then:
+          - ./download-dev-data.sh
+          - pytest -v tests/ -k "not (_not_a_real_test or testANIr2s or testBuiltins)"
+
+about:
+  homepage: https://github.com/aiqm/torchani
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Accurate Neural Network Potential on PyTorch
+
+extra:
+  recipe-maintainers:
+    - jeongseok-meta
+    - yueyericardo
+    - mikemhenry
+    - h-vetinari

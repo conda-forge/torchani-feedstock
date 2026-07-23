@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: "Jeongseok (JS) Lee" <jeongseok@meta.com>
+Date: Tue, 21 Jul 2026 16:26:00 -0700
+Subject: [PATCH] Remove ninja from Python runtime metadata
+
+The conda-forge ninja package provides the executable needed by PyTorch
+extension tooling, but it is not the PyPI Python distribution named
+"ninja" and therefore cannot satisfy pip check via Python distribution
+metadata.
+
+TorchANI does not import ninja at runtime, so keep the executable
+dependency in the conda recipe and remove only the Python metadata
+dependency from the built wheel.
+---
+ pyproject.toml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 526ee18..633827b 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -21,7 +21,6 @@ dependencies = [
+     "typing_extensions>=4.0.0",
+     "h5py",
+     "tqdm",
+-    "ninja",
+     "typer",
+     "rich",
+     "ase",
