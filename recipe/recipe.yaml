@@ -5,6 +5,7 @@ context:
   version: "2.8.4"
   build_number: 4
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
+  torch_proc_type_with_cuda_version: ${{ torch_proc_type ~ (cuda_compiler_version | replace(".", "") if torch_proc_type == "cuda" else "") }}
 
 package:
   name: ${{ name|lower }}
@@ -25,7 +26,7 @@ build:
   number: ${{ build_number }}
   skip:
     - win
-  string: ${{ torch_proc_type ~ (cuda_compiler_version | replace(".", "") if torch_proc_type == "cuda" else "_") ~ "py" ~ (python | version_to_buildstring) ~ "h" ~ hash ~ "_" ~ build_number }}
+  string: ${{ torch_proc_type_with_cuda_version ~ "_py" ~ (python | version_to_buildstring) ~ "h" ~ hash ~ "_" ~ build_number }}
   script:
     - export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
     # TorchANI setup.py does not search the conda include directory; this lets
