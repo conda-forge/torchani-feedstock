@@ -3,7 +3,7 @@ schema_version: 1
 context:
   name: torchani
   version: "2.8.4"
-  build_number: 4
+  build_number: 5
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   torch_proc_type_with_cuda_version: ${{ "cuda" ~ cuda_compiler_version | replace(".", "") if cuda_compiler_version != "None" else "cpu" }}
 
@@ -34,8 +34,7 @@ build:
     - export CPATH="${PREFIX}/include"
     - if: cuda_compiler_version != "None"
       then: $PYTHON -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms
-    - if: cuda_compiler_version == "None"
-      then: $PYTHON -m pip install . -vvv --no-deps
+      else: $PYTHON -m pip install . -vvv --no-deps
     - mkdir -p "${SP_DIR}/torchani/resources"
     - cp -R ./torchani/resources/* "${SP_DIR}/torchani/resources"
     - cp ./torchani/datasets/builtin_datasets.json "${SP_DIR}/torchani/datasets/builtin_datasets.json"
