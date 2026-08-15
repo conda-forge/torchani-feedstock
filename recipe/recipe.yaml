@@ -104,15 +104,21 @@ tests:
       pip_check: true
   - requirements:
       run:
-        - wget
-        - unzip
-        - tensorboard
-        - parameterized
-        - pillow
-        - pyyaml
-        - pytest
-        - expecttest
-        - pkbar
+        # These support the upstream Unix-only data-download and pytest steps.
+        # Keep the Windows test environment minimal; wget is not packaged for
+        # win-64, and Windows is covered by the import, pip-check, and ninja
+        # executable tests.
+        - if: unix
+          then:
+            - wget
+            - unzip
+            - tensorboard
+            - parameterized
+            - pillow
+            - pyyaml
+            - pytest
+            - expecttest
+            - pkbar
     files:
       source:
         - tests/
