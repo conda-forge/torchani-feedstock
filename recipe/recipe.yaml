@@ -132,6 +132,9 @@ tests:
       - if: unix
         then:
           - ./download-dev-data.sh
+          # PyPI sdists cannot preserve Git symlinks. Recreate the five links
+          # used by the upstream test suite after downloading their targets.
+          - for resource in ANI1_subset NIST NeuroChemOptimized benzene-md tripeptide-md; do ln -s "../../dev-data/hf-data/test_data/${resource}" "tests/resources/${resource}"; done
           - pytest -v tests/ -k "not (_not_a_real_test or testANIr2s or testBuiltins)"
 
 about:
