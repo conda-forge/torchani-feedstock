@@ -3,7 +3,7 @@ Subject: [PATCH] Use MSVC flags for optional extensions on Windows
 
 PyTorch's C++ extension helper invokes MSVC on Windows. Select the equivalent
 C++ standard, OpenMP, and preprocessor flags instead of passing GCC/Clang-only
-options to cl.exe.
+options to cl.exe. PyTorch 2.13's Windows headers require C++20.
 
 diff --git a/setup.py b/setup.py
 index ddaf0d2..c37b0f4 100644
@@ -15,7 +15,7 @@ index ddaf0d2..c37b0f4 100644
  
 -    cxx_args = ["-std=c++17"]
 +    if os.name == "nt":
-+        cxx_args = ["/std:c++17"]
++        cxx_args = ["/std:c++20"]
 +    else:
 +        cxx_args = ["-std=c++17"]
      print("C++ compiler args:")
@@ -27,7 +27,7 @@ index ddaf0d2..c37b0f4 100644
  
 -    cxx_args = ["-std=c++17", "-fopenmp"]
 +    if os.name == "nt":
-+        cxx_args = ["/std:c++17", "/openmp"]
++        cxx_args = ["/std:c++20", "/openmp"]
 +    else:
 +        cxx_args = ["-std=c++17", "-fopenmp"]
      if debug:
@@ -42,7 +42,7 @@ index ddaf0d2..c37b0f4 100644
  
 -    cxx_args = ["-std=c++17", "-fopenmp"]
 +    if os.name == "nt":
-+        cxx_args = ["/std:c++17", "/openmp"]
++        cxx_args = ["/std:c++20", "/openmp"]
 +    else:
 +        cxx_args = ["-std=c++17", "-fopenmp"]
      if debug:

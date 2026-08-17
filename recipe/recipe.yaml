@@ -83,6 +83,10 @@ requirements:
       then:
         - cuda-version ==${{ cuda_compiler_version }}
         - cuda-cudart-dev
+    # cuda-cudart-dev omits crt/host_defines.h on Windows. Remove this direct
+    # dependency once the CUDA package exposes that header transitively.
+    - if: win and cuda_compiler_version != "None"
+      then: cuda-crt-dev_${{ target_platform }}
   run:
     - python
     - ase
