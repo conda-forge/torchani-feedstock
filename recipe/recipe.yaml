@@ -33,6 +33,10 @@ source:
 
 build:
   number: ${{ build_number }}
+  skip:
+    # Conda-forge's Windows PyTorch CUDA 12 builds target 12.8, while this
+    # feedstock's compiler matrix targets 12.9. Build Windows CUDA 13 only.
+    - win and match(cuda_compiler_version, "12.*")
   string: ${{ torch_proc_type_with_cuda_version ~ "_py" ~ (python | version_to_buildstring) ~ "h" ~ hash ~ "_" ~ build_number }}
   script:
     - if: win and cuda_compiler_version != "None"
