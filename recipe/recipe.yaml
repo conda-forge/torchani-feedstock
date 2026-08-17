@@ -3,7 +3,7 @@ schema_version: 1
 context:
   name: torchani
   version: "2.8.4"
-  build_number: 5
+  build_number: 6
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   torch_proc_type_with_cuda_version: ${{ "cuda" ~ cuda_compiler_version | replace(".", "") if cuda_compiler_version != "None" else "cpu" }}
 
@@ -12,41 +12,51 @@ package:
   version: ${{ version }}
 
 source:
-  - url: https://github.com/aiqm/torchani/archive/refs/tags/${{ version }}.tar.gz
-    sha256: dd27f69df811fc94fa324f7cc7223805b4d0819aec0d1809a82e4694804b1262
+  # The PyPI sdist includes package data that setuptools omits when building
+  # directly from GitHub's generated source archive.
+  - url: https://pypi.org/packages/source/t/torchani/torchani-${{ version }}.tar.gz
+    sha256: 92f585debffbd0647cb68cd7f2232b4320814ff8a00d5d24dd73d51840ed4b06
     patches:
+      # Remove once upstream retries transient server errors while downloading
+      # its test data.
       - patches/0001-make-download-robust.patch
       # Keep pip check enabled while satisfying the tool dependency through
       # conda's executable ninja package instead of PyPI's Python metadata.
       - patches/0004-remove-ninja-python-metadata.patch
+      # Remove once a release supports CUDA 13's SM75+ architecture floor and
+      # Blackwell SM120 in setup.py.
       - if: match(cuda_compiler_version, "13.*")
         then: patches/0003-CUDA-13.0-GPU-arch-fix.patch
 
 build:
   number: ${{ build_number }}
   skip:
-    - win
+    # Upstream's optional CUDA extensions pass POSIX-only compiler flags.
+    # Remove this skip once setup.py supports MSVC/NVCC on Windows.
+    - win and cuda_compiler_version != "None"
   string: ${{ torch_proc_type_with_cuda_version ~ "_py" ~ (python | version_to_buildstring) ~ "h" ~ hash ~ "_" ~ build_number }}
   script:
-    - export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
+    - if: win
+      then: call "%RECIPE_DIR%\\build.bat"
+    - if: unix
+      then: export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
     # TorchANI setup.py does not search the conda include directory; this lets
     # nvcc find headers such as $PREFIX/include/crypt.h.
-    - export CPATH="${PREFIX}/include"
-    - if: cuda_compiler_version != "None"
+    - if: unix
+      then: export CPATH="${PREFIX}/include"
+    - if: cuda_compiler_version != "None" and unix
       then: $PYTHON -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms
-      else: $PYTHON -m pip install . -vvv --no-deps
-    - mkdir -p "${SP_DIR}/torchani/resources"
-    - cp -R ./torchani/resources/* "${SP_DIR}/torchani/resources"
-    - cp ./torchani/datasets/builtin_datasets.json "${SP_DIR}/torchani/datasets/builtin_datasets.json"
-    - cp ./torchani/datasets/md5s.csv "${SP_DIR}/torchani/datasets/md5s.csv"
+    - if: cuda_compiler_version == "None" and unix
+      then: $PYTHON -m pip install . -vvv --no-deps
 
 requirements:
   build:
-    - ${{ stdlib("c") }}
-    - ${{ compiler("c") }}
-    - ${{ compiler("cxx") }}
     - if: cuda_compiler_version != "None"
-      then: ${{ compiler("cuda") }}
+      then:
+        - ${{ stdlib("c") }}
+        - ${{ compiler("c") }}
+        - ${{ compiler("cxx") }}
+        - ${{ compiler("cuda") }}
     - if: build_platform != target_platform
       then:
         - cross-python_${{ target_platform }}
@@ -54,15 +64,14 @@ requirements:
         - cython
         - pytorch
         - pytorch * ${{ torch_proc_type }}*
+        - setuptools_scm
     - if: cuda_compiler_version != "None"
       then: cuda-version ==${{ cuda_compiler_version }}
-    - setuptools_scm
   host:
     - python
     - pip
     - setuptools
     - setuptools_scm
-    - importlib-metadata
     - pytorch
     - pytorch * ${{ torch_proc_type }}*
     - if: cuda_compiler_version != "None"
@@ -71,9 +80,6 @@ requirements:
         - cuda-cudart-dev
   run:
     - python
-    - pip
-    - setuptools
-    - setuptools_scm
     - ase
     - h5py
     - huggingface_hub
@@ -95,17 +101,24 @@ tests:
   - python:
       imports:
         - torchani
+      pip_check: true
   - requirements:
       run:
-        - wget
-        - unzip
-        - tensorboard
-        - parameterized
-        - pillow
-        - pyyaml
-        - pytest
-        - expecttest
-        - pkbar
+        # These support the upstream Unix-only data-download and pytest steps.
+        # Keep the Windows test environment minimal; wget is not packaged for
+        # win-64, and Windows is covered by the import, pip-check, and ninja
+        # executable tests.
+        - if: unix
+          then:
+            - wget
+            - unzip
+            - tensorboard
+            - parameterized
+            - pillow
+            - pyyaml
+            - pytest
+            - expecttest
+            - pkbar
     files:
       source:
         - tests/
@@ -119,6 +132,9 @@ tests:
       - if: unix
         then:
           - ./download-dev-data.sh
+          # PyPI sdists cannot preserve Git symlinks. Recreate the five links
+          # used by the upstream test suite after downloading their targets.
+          - for resource in ANI1_subset NIST NeuroChemOptimized benzene-md tripeptide-md; do ln -s "../../dev-data/hf-data/test_data/${resource}" "tests/resources/${resource}"; done
           - pytest -v tests/ -k "not (_not_a_real_test or testANIr2s or testBuiltins)"
 
 about:
@@ -129,6 +145,7 @@ about:
   summary: Accurate Neural Network Potential on PyTorch
 
 extra:
+  feedstock-name: torchani
   recipe-maintainers:
     - jeongseok-meta
     - yueyericardo
