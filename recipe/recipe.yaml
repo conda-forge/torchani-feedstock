@@ -30,6 +30,9 @@ source:
       # Remove once upstream ships native MSVC flags for the optional
       # extensions: https://github.com/aiqm/torchani/issues/686
       - patches/0005-support-msvc-extensions.patch
+      # Remove once upstream recognizes the .pyd/.dll suffixes used by Windows
+      # extension builds: https://github.com/aiqm/torchani/issues/686
+      - patches/0006-load-windows-extensions.patch
 
 build:
   number: ${{ build_number }}
