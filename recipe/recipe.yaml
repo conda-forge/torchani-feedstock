@@ -3,7 +3,7 @@ schema_version: 1
 context:
   name: torchani
   version: "2.8.4"
-  build_number: 6
+  build_number: 7
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   torch_proc_type_with_cuda_version: ${{ "cuda" ~ cuda_compiler_version | replace(".", "") if cuda_compiler_version != "None" else "cpu" }}
 
@@ -27,17 +27,25 @@ source:
       # Blackwell SM120 in setup.py.
       - if: match(cuda_compiler_version, "13.*")
         then: patches/0003-CUDA-13.0-GPU-arch-fix.patch
+      # Remove once upstream ships native MSVC flags for the optional
+      # extensions: https://github.com/aiqm/torchani/issues/686
+      - patches/0005-support-msvc-extensions.patch
+      # Remove once upstream recognizes the .pyd/.dll suffixes used by Windows
+      # extension builds: https://github.com/aiqm/torchani/issues/686
+      - patches/0006-load-windows-extensions.patch
 
 build:
   number: ${{ build_number }}
   skip:
-    # Upstream's optional CUDA extensions pass POSIX-only compiler flags.
-    # Remove this skip once setup.py supports MSVC/NVCC on Windows.
-    - win and cuda_compiler_version != "None"
+    # Conda-forge's Windows PyTorch CUDA 12 builds target 12.8, while this
+    # feedstock's compiler matrix targets 12.9. Build Windows CUDA 13 only.
+    - win and match(cuda_compiler_version, "12.*")
   string: ${{ torch_proc_type_with_cuda_version ~ "_py" ~ (python | version_to_buildstring) ~ "h" ~ hash ~ "_" ~ build_number }}
   script:
-    - if: win
-      then: call "%RECIPE_DIR%\\build.bat"
+    - if: win and cuda_compiler_version != "None"
+      then: call "%RECIPE_DIR%\\build.bat" cuda
+    - if: win and cuda_compiler_version == "None"
+      then: call "%RECIPE_DIR%\\build.bat" cpu
     - if: unix
       then: export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
     # TorchANI setup.py does not search the conda include directory; this lets
@@ -78,6 +86,10 @@ requirements:
       then:
         - cuda-version ==${{ cuda_compiler_version }}
         - cuda-cudart-dev
+    # cuda-cudart-dev omits crt/host_defines.h on Windows. Remove this direct
+    # dependency once the CUDA package exposes that header transitively.
+    - if: win and cuda_compiler_version != "None"
+      then: cuda-crt-dev_${{ target_platform }}
   run:
     - python
     - ase
