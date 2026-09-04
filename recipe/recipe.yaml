@@ -27,12 +27,6 @@ source:
       # Blackwell SM120 in setup.py.
       - if: match(cuda_compiler_version, "13.*")
         then: patches/0003-CUDA-13.0-GPU-arch-fix.patch
-      # Remove once upstream ships native MSVC flags for the optional
-      # extensions: https://github.com/aiqm/torchani/issues/686
-      - patches/0005-support-msvc-extensions.patch
-      # Remove once upstream recognizes the .pyd/.dll suffixes used by Windows
-      # extension builds: https://github.com/aiqm/torchani/issues/686
-      - patches/0006-load-windows-extensions.patch
 
 build:
   number: ${{ build_number }}
