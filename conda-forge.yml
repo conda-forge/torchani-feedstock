@@ -16,3 +16,5 @@ workflow_settings:
   pagefile_size:
     - value: 20
       os: linux
+bot:
+  automerge: true
