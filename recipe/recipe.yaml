@@ -23,6 +23,9 @@ source:
       # Keep pip check enabled while satisfying the tool dependency through
       # conda's executable ninja package instead of PyPI's Python metadata.
       - patches/0004-remove-ninja-python-metadata.patch
+      # Remove once a release allows PyTorch 2.14; 2.9.0 caps it at <=2.13 in
+      # https://github.com/aiqm/torchani/blob/2.9.0/pyproject.toml#L22
+      - patches/0005-allow-pytorch-2.14.patch
       # Remove once a release supports CUDA 13's SM75+ architecture floor and
       # Blackwell SM120 in setup.py.
       - if: match(cuda_compiler_version, "13.*")
