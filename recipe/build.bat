@@ -5,6 +5,9 @@ set "SETUPTOOLS_SCM_PRETEND_VERSION=%PKG_VERSION%"
 if exist "%LIBRARY_LIB%\x64" set "LIB=%LIBRARY_LIB%\x64;%LIB%"
 
 if /I "%~1"=="cuda" (
+  rem CUDA 13's CCCL rejects MSVC's traditional preprocessor; cl.exe reads CL,
+  rem so this also reaches the host compiles nvcc launches.
+  set "CL=/Zc:preprocessor %CL%"
   "%PYTHON%" -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms
 ) else (
   "%PYTHON%" -m pip install . -vvv --no-deps
