@@ -1,0 +1,46 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: "Jeongseok (JS) Lee" <jeongseok@meta.com>
+Date: Wed, 21 Oct 2026 09:07:05 -0700
+Subject: [PATCH] Build the C++ extensions as C++20 on all platforms
+
+PyTorch 2.13 and newer headers require C++20. TorchANI 2.9.0 already
+passes /std:c++20 on Windows but still passes -std=c++17 elsewhere, so
+the Linux CUDA build fails in the PyTorch headers.
+---
+ setup.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 3650dbb..04b494d 100644
+--- a/setup.py
++++ b/setup.py
+@@ -70,7 +70,7 @@ def cuaev_extension_kwargs(
+     if os.name == "nt":
+         cxx_args = ["/std:c++20"]
+     else:
+-        cxx_args = ["-std=c++17"]
++        cxx_args = ["-std=c++20"]
+     print("C++ compiler args:")
+     for arg in cxx_args:
+         print(f"    {arg}")
+@@ -89,7 +89,7 @@ def mnp_extension_kwargs(debug: bool) -> dict[str, tp.Any]:
+     if os.name == "nt":
+         cxx_args = ["/std:c++20", "/openmp"]
+     else:
+-        cxx_args = ["-std=c++17", "-fopenmp"]
++        cxx_args = ["-std=c++20", "-fopenmp"]
+     if debug:
+         cxx_args.append("/DTORCHANI_DEBUG" if os.name == "nt" else "-DTORCHANI_DEBUG")
+ 
+@@ -110,7 +110,7 @@ def clist_extension_kwargs(debug: bool) -> dict[str, tp.Any]:
+     if os.name == "nt":
+         cxx_args = ["/std:c++20", "/openmp"]
+     else:
+-        cxx_args = ["-std=c++17", "-fopenmp"]
++        cxx_args = ["-std=c++20", "-fopenmp"]
+     if debug:
+         cxx_args.append("/DTORCHANI_DEBUG" if os.name == "nt" else "-DTORCHANI_DEBUG")
+ 
+-- 
+2.56.0
+
