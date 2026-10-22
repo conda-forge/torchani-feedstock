@@ -3,7 +3,7 @@ schema_version: 1
 context:
   name: torchani
   version: "2.9.0"
-  build_number: 0
+  build_number: 1
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   torch_proc_type_with_cuda_version: ${{ "cuda" ~ cuda_compiler_version | replace(".", "") if cuda_compiler_version != "None" else "cpu" }}
 
@@ -23,6 +23,12 @@ source:
       # Keep pip check enabled while satisfying the tool dependency through
       # conda's executable ninja package instead of PyPI's Python metadata.
       - patches/0004-remove-ninja-python-metadata.patch
+      # Remove once a release allows PyTorch 2.14; 2.9.0 caps it at <=2.13 in
+      # https://github.com/aiqm/torchani/blob/2.9.0/pyproject.toml#L22
+      - patches/0005-allow-pytorch-2.14.patch
+      # PyTorch 2.13+ headers need C++20, but 2.9.0 passes -std=c++17 outside
+      # Windows. Remove once a release builds its extensions as C++20 everywhere.
+      - patches/0006-build-extensions-as-cxx20.patch
       # Remove once a release supports CUDA 13's SM75+ architecture floor and
       # Blackwell SM120 in setup.py.
       - if: match(cuda_compiler_version, "13.*")
@@ -48,9 +54,7 @@ build:
         - export CPATH="${PREFIX}/include"
         - if: cuda_compiler_version != "None"
           then: $PYTHON -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms
-    - if: cuda_compiler_version == "None" and unix
-      then: $PYTHON -m pip install . -vvv --no-deps
-
+          else: $PYTHON -m pip install . -vvv --no-deps
 requirements:
   build:
     - if: cuda_compiler_version != "None"
