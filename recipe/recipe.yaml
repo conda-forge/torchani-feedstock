@@ -2,8 +2,8 @@ schema_version: 1
 
 context:
   name: torchani
-  version: "2.9.0"
-  build_number: 1
+  version: "2.10.0"
+  build_number: 0
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   torch_proc_type_with_cuda_version: ${{ "cuda" ~ cuda_compiler_version | replace(".", "") if cuda_compiler_version != "None" else "cpu" }}
 
@@ -15,7 +15,7 @@ source:
   # The PyPI sdist includes package data that setuptools omits when building
   # directly from GitHub's generated source archive.
   - url: https://pypi.org/packages/source/t/torchani/torchani-${{ version }}.tar.gz
-    sha256: fc1ff7df470bf7ffed7e8d7f428db8051dd54622a178577960999a0618f5a297
+    sha256: 82b7aa11be6286488b0e62446b1877e1b0a16cca9ee78294acc1dc4e1d4eb3d4
     patches:
       # Remove once upstream retries transient server errors while downloading
       # its test data.
@@ -23,14 +23,14 @@ source:
       # Keep pip check enabled while satisfying the tool dependency through
       # conda's executable ninja package instead of PyPI's Python metadata.
       - patches/0004-remove-ninja-python-metadata.patch
-      # Remove once a release allows PyTorch 2.14; 2.9.0 caps it at <=2.13 in
-      # https://github.com/aiqm/torchani/blob/2.9.0/pyproject.toml#L22
+      # Remove once a release allows PyTorch 2.14; 2.10.0 still caps it at <=2.13 in
+      # https://github.com/aiqm/torchani/blob/2.10.0/pyproject.toml#L22
       - patches/0005-allow-pytorch-2.14.patch
-      # PyTorch 2.13+ headers need C++20, but 2.9.0 passes -std=c++17 outside
+      # PyTorch 2.13+ headers need C++20, but 2.10.0 still passes -std=c++17 outside
       # Windows. Remove once a release builds its extensions as C++20 everywhere.
       - patches/0006-build-extensions-as-cxx20.patch
-      # Remove once a release supports CUDA 13's SM75+ architecture floor and
-      # Blackwell SM120 in setup.py.
+      # Remove once a release drops SM60-70 (below CUDA 13's SM75 floor) and builds
+      # Blackwell SM120 with ext-all-sms in setup.py; 2.10.0 does neither.
       - if: match(cuda_compiler_version, "13.*")
         then: patches/0003-CUDA-13.0-GPU-arch-fix.patch
 
