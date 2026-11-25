@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: torchani
-  version: "2.12.0"
+  version: "2.13.0"
   build_number: 0
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   torch_proc_type_with_cuda_version: ${{ "cuda" ~ cuda_compiler_version | replace(".", "") if cuda_compiler_version != "None" else "cpu" }}
@@ -15,7 +15,7 @@ source:
   # The PyPI sdist includes package data that setuptools omits when building
   # directly from GitHub's generated source archive.
   - url: https://pypi.org/packages/source/t/torchani/torchani-${{ version }}.tar.gz
-    sha256: 7c74fe9baa24e003bd2cdd8caac16cd513014465b2912e4c93dd60f8338cd4be
+    sha256: d5e06120bbc97cd16bcbddacd7b21c7f442d9ff978d524730b254d268719cb43
     patches:
       # Remove once upstream retries transient server errors while downloading
       # its test data.
