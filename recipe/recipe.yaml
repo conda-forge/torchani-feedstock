@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: torchani
-  version: "2.15.0"
+  version: "2.15.1"
   build_number: 0
   torch_proc_type: ${{ "cuda" if cuda_compiler_version != "None" else "cpu" }}
   torch_proc_type_with_cuda_version: ${{ "cuda" ~ cuda_compiler_version | replace(".", "") if cuda_compiler_version != "None" else "cpu" }}
@@ -15,7 +15,7 @@ source:
   # The PyPI sdist includes package data that setuptools omits when building
   # directly from GitHub's generated source archive.
   - url: https://pypi.org/packages/source/t/torchani/torchani-${{ version }}.tar.gz
-    sha256: 7fab69ac821396b259f6838152a05ddfc198f1966097dedbc575b1dc8503cce6
+    sha256: 10de1cb5d5252781b17a6cd5d7dcf8c65bea9babeb3100b11527187b40577de4
     patches:
       # Remove once upstream retries transient server errors while downloading
       # its test data.
@@ -23,11 +23,11 @@ source:
       # Keep pip check enabled while satisfying the tool dependency through
       # conda's executable ninja package instead of PyPI's Python metadata.
       - patches/0004-remove-ninja-python-metadata.patch
-      # Remove once a release allows PyTorch 2.14; 2.15.0 still caps it at <=2.13 in
-      # https://github.com/aiqm/torchani/blob/2.15.0/pyproject.toml#L22
+      # Remove once a release allows PyTorch 2.14; 2.15.1 still caps it at <=2.13 in
+      # https://github.com/aiqm/torchani/blob/2.15.1/pyproject.toml#L22
       - patches/0005-allow-pytorch-2.14.patch
       # Remove once a release drops SM60-70 (below CUDA 13's SM75 floor) and builds
-      # Blackwell SM120 with ext-all-sms in setup.py; 2.15.0 does neither.
+      # Blackwell SM120 with ext-all-sms in setup.py; 2.15.1 does neither.
       - if: match(cuda_compiler_version, "13.*")
         then: patches/0003-CUDA-13.0-GPU-arch-fix.patch
 
