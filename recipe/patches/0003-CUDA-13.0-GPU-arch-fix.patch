@@ -8,19 +8,19 @@ Subject: [PATCH] CUDA 13.0 GPU arch fix
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/setup.py b/setup.py
-index e24f219..3e20aa4 100644
+index 36c693c..c0e4e16 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -150,7 +150,7 @@ TORCHANI_FLAGS = {"ext", "ext-all-sms", "ext-debug", "ext-no-opt"}
+@@ -164,7 +164,7 @@ TORCHANI_FLAGS = {"ext", "ext-all-sms", "ext-debug", "ext-no-opt"}
  # Ampere: 80, 86 (3d gen TensorCore)
  # Ada Lovelace, Hopper: 89 (4th gen TensorCore)
- # Blackwell: 100 (5th gen TensorCore)
+ # Blackwell: 100, 120 (5th gen TensorCore)
 -SUPPORTED_SMS = {"60", "61", "70", "75", "80", "86", "89", "100", "120"}
 +SUPPORTED_SMS = {"75", "80", "86", "89", "100", "120"}
  for sm in SUPPORTED_SMS:
      TORCHANI_FLAGS.add(f"ext-sm{sm}")
  
-@@ -197,7 +197,7 @@ def setup_kwargs() -> dict[str, tp.Any]:
+@@ -212,7 +212,7 @@ def setup_kwargs() -> dict[str, tp.Any]:
      def collect_all_sms() -> set[str]:
          print("-" * 75)
          print("Will add all SMs torch supports")
@@ -29,7 +29,7 @@ index e24f219..3e20aa4 100644
          cuda_ver = float(torch.version.cuda) if torch.version.cuda is not None else 0
          if cuda_ver >= 10:
              sms.add("75")
-@@ -208,6 +208,8 @@ def setup_kwargs() -> dict[str, tp.Any]:
+@@ -223,6 +223,8 @@ def setup_kwargs() -> dict[str, tp.Any]:
              sms.add("89")
          if cuda_ver >= 12.8:
              sms.add("100")
@@ -38,3 +38,6 @@ index e24f219..3e20aa4 100644
          return sms
  
      def collect_compatible_sms() -> set[str]:
+-- 
+2.56.0
+

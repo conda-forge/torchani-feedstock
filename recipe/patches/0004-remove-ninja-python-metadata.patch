@@ -12,18 +12,21 @@ TorchANI does not import ninja at runtime, so keep the executable
 dependency in the conda recipe and remove only the Python metadata
 dependency from the built wheel.
 ---
- pyproject.toml | 1 -
- 1 file changed, 1 deletion(-)
+  pyproject.toml | 1 -
+  1 file changed, 1 deletion(-)
 
 diff --git a/pyproject.toml b/pyproject.toml
-index 526ee18..633827b 100644
+index bf648fc..302d30e 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
-@@ -21,7 +21,6 @@ dependencies = [
-     "typing_extensions>=4.0.0",
+@@ -23,7 +23,6 @@ dependencies = [
+     "numpy",
      "h5py",
      "tqdm",
 -    "ninja",
      "typer",
      "rich",
      "ase",
+-- 
+2.56.0
+

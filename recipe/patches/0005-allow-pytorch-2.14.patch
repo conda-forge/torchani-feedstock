@@ -7,22 +7,22 @@ TorchANI 2.9.0 caps torch at <=2.13, so pip check fails once the
 package is rebuilt against PyTorch 2.14. conda-forge pins the PyTorch
 the extension is built against, so allow the 2.14 series here.
 ---
- pyproject.toml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  pyproject.toml | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/pyproject.toml b/pyproject.toml
-index 315b950..6a09a71 100644
+index 302d30e..e7ca525 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
 @@ -19,7 +19,7 @@ keywords = [
  ]
- requires-python = ">=3.10"
+ requires-python = ">=3.11"
  dependencies = [
 -    "torch>=2.0,<=2.13",
 +    "torch>=2.0,<2.15",
      "numpy",
-     "typing_extensions>=4.0.0",
      "h5py",
+     "tqdm",
 -- 
 2.56.0
 
